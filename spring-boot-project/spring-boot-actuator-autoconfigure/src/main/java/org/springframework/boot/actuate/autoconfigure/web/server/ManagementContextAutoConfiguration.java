@@ -22,7 +22,9 @@ import org.springframework.boot.actuate.autoconfigure.web.ManagementContextType;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.server.autoconfigure.ServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -44,6 +46,7 @@ import org.springframework.util.Assert;
  */
 @AutoConfiguration
 @AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE)
+@ConditionalOnClass(ServerProperties.class)
 @EnableConfigurationProperties(ManagementServerProperties.class)
 public class ManagementContextAutoConfiguration {
 
