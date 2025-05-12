@@ -45,7 +45,7 @@ class DefaultApplicationContextFactory implements ApplicationContextFactory {
 	@Override
 	public ConfigurableApplicationContext create(WebApplicationType webApplicationType) {
 		try {
-			return getFromSpringFactories(webApplicationType, ApplicationContextFactory::create,
+			return getFromSpringFactories(webApplicationType, ApplicationContextFactory::create, /* ApplicationServletEnvironment */
 					AnnotationConfigApplicationContext::new);
 		}
 		catch (Exception ex) {

@@ -86,7 +86,7 @@ class ConfigDataEnvironment {
 	 */
 	static final ConfigDataLocation[] DEFAULT_SEARCH_LOCATIONS;
 	static {
-		List<ConfigDataLocation> locations = new ArrayList<>();
+		List<ConfigDataLocation> locations = new ArrayList<>();  /* ## 默认配置文件搜索路径 */
 		locations.add(ConfigDataLocation.of("optional:classpath:/;optional:classpath:/config/"));
 		locations.add(ConfigDataLocation.of("optional:file:./;optional:file:./config/;optional:file:./config/*/"));
 		DEFAULT_SEARCH_LOCATIONS = locations.toArray(new ConfigDataLocation[0]);
@@ -145,12 +145,12 @@ class ConfigDataEnvironment {
 				.orElse(ConfigDataNotFoundAction.FAIL);
 		this.bootstrapContext = bootstrapContext;
 		this.environment = environment;
-		this.resolvers = createConfigDataLocationResolvers(logFactory, bootstrapContext, binder, resourceLoader);
+		this.resolvers = createConfigDataLocationResolvers(logFactory, bootstrapContext, binder, resourceLoader);/* StandardConfigDataLocationResolver -->application.properties解析器*/
 		this.additionalProfiles = additionalProfiles;
 		this.environmentUpdateListener = (environmentUpdateListener != null) ? environmentUpdateListener
 				: ConfigDataEnvironmentUpdateListener.NONE;
 		this.loaders = new ConfigDataLoaders(logFactory, bootstrapContext, resourceLoader.getClassLoader());
-		this.contributors = createContributors(binder);
+		this.contributors = createContributors(binder);/* ##配置文件搜索路径 - 默认optional:classpath:/;optional:classpath:/config/ */
 	}
 
 	protected ConfigDataLocationResolvers createConfigDataLocationResolvers(DeferredLogFactory logFactory,
@@ -172,8 +172,8 @@ class ConfigDataEnvironment {
 						propertySource.getName()));
 				contributors.add(ConfigDataEnvironmentContributor.ofExisting(propertySource));
 			}
-		}
-		contributors.addAll(getInitialImportContributors(binder));
+		}   /* ## 配置文件搜索路径 --spring.config.import、spring.config.additional-location、spring.config.location */
+		contributors.addAll(getInitialImportContributors(binder));/* 上面为空，默认optional:classpath:/;optional:classpath:/config/  --> optional:file:./;optional:file:./config/;optional:file:./config/ */
 		if (defaultPropertySource != null) {
 			this.logger.trace("Creating wrapped config data contributor for default property source");
 			contributors.add(ConfigDataEnvironmentContributor.ofExisting(defaultPropertySource));
@@ -220,24 +220,24 @@ class ConfigDataEnvironment {
 	 * Process all contributions and apply any newly imported property sources to the
 	 * {@link Environment}.
 	 */
-	void processAndApply() {
+	void processAndApply() { /* ##配置文件application.properties等 */
 		ConfigDataImporter importer = new ConfigDataImporter(this.logFactory, this.notFoundAction, this.resolvers,
 				this.loaders);
 		registerBootstrapBinder(this.contributors, null, DENY_INACTIVE_BINDING);
-		ConfigDataEnvironmentContributors contributors = processInitial(this.contributors, importer);
+		ConfigDataEnvironmentContributors contributors = processInitial(this.contributors, importer); /* ## 加载程序员配置文件application.properties等 */
 		ConfigDataActivationContext activationContext = createActivationContext(
 				contributors.getBinder(null, BinderOption.FAIL_ON_BIND_TO_INACTIVE_SOURCE));
-		contributors = processWithoutProfiles(contributors, importer, activationContext);
+		contributors = processWithoutProfiles(contributors, importer, activationContext);//加载application.properties包含文件
 		activationContext = withProfiles(contributors, activationContext);
-		contributors = processWithProfiles(contributors, importer, activationContext);
-		applyToEnvironment(contributors, activationContext, importer.getLoadedLocations(),
+		contributors = processWithProfiles(contributors, importer, activationContext); //加载激活环境文件
+		applyToEnvironment(contributors, activationContext, importer.getLoadedLocations(),/* 添加application.properties配置源到Environment && 设置激活环境 activeProfiles */
 				importer.getOptionalLocations());
 	}
 
 	private ConfigDataEnvironmentContributors processInitial(ConfigDataEnvironmentContributors contributors,
 			ConfigDataImporter importer) {
 		this.logger.trace("Processing initial config data environment contributors without activation context");
-		contributors = contributors.withProcessedImports(importer, null);
+		contributors = contributors.withProcessedImports(importer, null);/* ## 加载程序员配置文件application.properties等 */
 		registerBootstrapBinder(contributors, null, DENY_INACTIVE_BINDING);
 		return contributors;
 	}
@@ -325,13 +325,13 @@ class ConfigDataEnvironment {
 		checkForInvalidProperties(contributors);
 		checkMandatoryLocations(contributors, activationContext, loadedLocations, optionalLocations);
 		MutablePropertySources propertySources = this.environment.getPropertySources();
-		applyContributor(contributors, activationContext, propertySources);
+		applyContributor(contributors, activationContext, propertySources); /* 添加application.properties配置源到Environment */
 		DefaultPropertiesPropertySource.moveToEnd(propertySources);
 		Profiles profiles = activationContext.getProfiles();
 		this.logger.trace(LogMessage.format("Setting default profiles: %s", profiles.getDefault()));
 		this.environment.setDefaultProfiles(StringUtils.toStringArray(profiles.getDefault()));
 		this.logger.trace(LogMessage.format("Setting active profiles: %s", profiles.getActive()));
-		this.environment.setActiveProfiles(StringUtils.toStringArray(profiles.getActive()));
+		this.environment.setActiveProfiles(StringUtils.toStringArray(profiles.getActive()));/* ##设置激活环境 activeProfiles */
 		this.environmentUpdateListener.onSetProfiles(profiles);
 	}
 
@@ -348,7 +348,7 @@ class ConfigDataEnvironment {
 				else {
 					this.logger
 							.trace(LogMessage.format("Adding imported property source '%s'", propertySource.getName()));
-					propertySources.addLast(propertySource);
+					propertySources.addLast(propertySource);/* 添加配置文件源到Environment */
 					this.environmentUpdateListener.onPropertySourceAdded(propertySource, contributor.getLocation(),
 							contributor.getResource());
 				}

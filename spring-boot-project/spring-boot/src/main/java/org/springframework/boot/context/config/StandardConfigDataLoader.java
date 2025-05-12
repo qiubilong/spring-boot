@@ -46,12 +46,12 @@ public class StandardConfigDataLoader implements ConfigDataLoader<StandardConfig
 			return ConfigData.EMPTY;
 		}
 		ConfigDataResourceNotFoundException.throwIfDoesNotExist(resource, resource.getResource());
-		StandardConfigDataReference reference = resource.getReference();
+		StandardConfigDataReference reference = resource.getReference();/* classpath:/application.properties */
 		Resource originTrackedResource = OriginTrackedResource.of(resource.getResource(),
 				Origin.from(reference.getConfigDataLocation()));
 		String name = String.format("Config resource '%s' via location '%s'", resource,
 				reference.getConfigDataLocation());
-		List<PropertySource<?>> propertySources = reference.getPropertySourceLoader().load(name, originTrackedResource);
+		List<PropertySource<?>> propertySources = reference.getPropertySourceLoader().load(name, originTrackedResource);/* ##加载 classpath:/application.properties  */
 		PropertySourceOptions options = (resource.getProfile() != null) ? PROFILE_SPECIFIC : NON_PROFILE_SPECIFIC;
 		return new ConfigData(propertySources, options);
 	}

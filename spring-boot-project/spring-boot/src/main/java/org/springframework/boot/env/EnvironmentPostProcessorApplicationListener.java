@@ -83,7 +83,7 @@ public class EnvironmentPostProcessorApplicationListener implements SmartApplica
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
-		if (event instanceof ApplicationEnvironmentPreparedEvent) {
+		if (event instanceof ApplicationEnvironmentPreparedEvent) { /* 环境配置准备事件 --> 加载application.properties等配置文件 */
 			onApplicationEnvironmentPreparedEvent((ApplicationEnvironmentPreparedEvent) event);
 		}
 		if (event instanceof ApplicationPreparedEvent) {
@@ -99,7 +99,7 @@ public class EnvironmentPostProcessorApplicationListener implements SmartApplica
 		SpringApplication application = event.getSpringApplication();
 		for (EnvironmentPostProcessor postProcessor : getEnvironmentPostProcessors(application.getResourceLoader(),
 				event.getBootstrapContext())) {
-			postProcessor.postProcessEnvironment(environment, application);
+			postProcessor.postProcessEnvironment(environment, application); /* ConfigDataEnvironmentPostProcessor -->加载application.properties等配置文件 */
 		}
 	}
 

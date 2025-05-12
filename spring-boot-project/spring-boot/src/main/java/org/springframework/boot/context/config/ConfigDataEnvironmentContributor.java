@@ -66,7 +66,7 @@ class ConfigDataEnvironmentContributor implements Iterable<ConfigDataEnvironment
 
 	private final ConfigurationPropertySource configurationPropertySource;
 
-	private final ConfigDataProperties properties;
+	private final ConfigDataProperties properties;/* ## 配置文件搜索路径，例如 - optional:classpath:/;optional:classpath:/config/ */
 
 	private final ConfigData.Options configDataOptions;
 

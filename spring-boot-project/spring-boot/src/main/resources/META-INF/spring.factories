@@ -19,7 +19,7 @@ org.springframework.boot.context.config.ConfigDataLoader=\
 org.springframework.boot.context.config.ConfigTreeConfigDataLoader,\
 org.springframework.boot.context.config.StandardConfigDataLoader
 
-# Application Context Factories
+# Application Context Factories ## Spring????
 org.springframework.boot.ApplicationContextFactory=\
 org.springframework.boot.web.reactive.context.AnnotationConfigReactiveWebServerApplicationContext.Factory,\
 org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext.Factory
@@ -40,7 +40,7 @@ org.springframework.boot.context.config.DelegatingApplicationContextInitializer,
 org.springframework.boot.rsocket.context.RSocketPortInfoApplicationContextInitializer,\
 org.springframework.boot.web.context.ServerPortInfoApplicationContextInitializer
 
-# Application Listeners
+# Application Listeners -- ????????? - EnvironmentPostProcessorApplicationListener
 org.springframework.context.ApplicationListener=\
 org.springframework.boot.ClearCachesApplicationListener,\
 org.springframework.boot.builder.ParentContextCloserApplicationListener,\
@@ -50,7 +50,7 @@ org.springframework.boot.context.config.DelegatingApplicationListener,\
 org.springframework.boot.context.logging.LoggingApplicationListener,\
 org.springframework.boot.env.EnvironmentPostProcessorApplicationListener
 
-# Environment Post Processors
+# Environment Post Processors -- ??application.yaml?? - ConfigDataEnvironmentPostProcessor
 org.springframework.boot.env.EnvironmentPostProcessor=\
 org.springframework.boot.cloud.CloudFoundryVcapEnvironmentPostProcessor,\
 org.springframework.boot.context.config.ConfigDataEnvironmentPostProcessor,\

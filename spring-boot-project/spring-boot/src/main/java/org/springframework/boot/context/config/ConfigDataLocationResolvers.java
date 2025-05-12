@@ -104,7 +104,7 @@ class ConfigDataLocationResolvers {
 		}
 		for (ConfigDataLocationResolver<?> resolver : getResolvers()) {
 			if (resolver.isResolvable(context, location)) {
-				return resolve(resolver, context, location, profiles);
+				return resolve(resolver, context, location, profiles);/* ## 解析配置文件路径*/
 			}
 		}
 		throw new UnsupportedConfigDataLocationException(location);

@@ -61,7 +61,7 @@ public class StandardConfigDataLocationResolver
 
 	static final String CONFIG_NAME_PROPERTY = "spring.config.name";
 
-	private static final String[] DEFAULT_CONFIG_NAMES = { "application" };
+	private static final String[] DEFAULT_CONFIG_NAMES = { "application" };/* 默认配置文件名 */
 
 	private static final Pattern URL_PREFIX = Pattern.compile("^([a-zA-Z][a-zA-Z0-9*]*?:)(.*$)");
 
@@ -70,10 +70,10 @@ public class StandardConfigDataLocationResolver
 	private static final String NO_PROFILE = null;
 
 	private final Log logger;
-
+    //配置源加载器 - PropertiesPropertySourceLoader、YamlPropertySourceLoader
 	private final List<PropertySourceLoader> propertySourceLoaders;
 
-	private final String[] configNames;
+	private final String[] configNames; /* ## 配置文件名，默认 application */
 
 	private final LocationResourceLoader resourceLoader;
 
@@ -84,7 +84,7 @@ public class StandardConfigDataLocationResolver
 	 * @param resourceLoader a {@link ResourceLoader} used to load resources
 	 */
 	public StandardConfigDataLocationResolver(Log logger, Binder binder, ResourceLoader resourceLoader) {
-		this.logger = logger;
+		this.logger = logger;        /* 加载springboot/META-INF/spring.factories/org.springframework.boot.env.PropertySourceLoader */
 		this.propertySourceLoaders = SpringFactoriesLoader.loadFactories(PropertySourceLoader.class,
 				getClass().getClassLoader());
 		this.configNames = getConfigNames(binder);
@@ -199,7 +199,7 @@ public class StandardConfigDataLocationResolver
 			ConfigDataLocation configDataLocation, String directory, String profile) {
 		Deque<StandardConfigDataReference> references = new ArrayDeque<>();
 		for (PropertySourceLoader propertySourceLoader : this.propertySourceLoaders) {
-			for (String extension : propertySourceLoader.getFileExtensions()) {
+			for (String extension : propertySourceLoader.getFileExtensions()) {/* ##配置文件类型 properties、yaml文件 */
 				StandardConfigDataReference reference = new StandardConfigDataReference(configDataLocation, directory,
 						directory + name, profile, extension, propertySourceLoader);
 				if (!references.contains(reference)) {

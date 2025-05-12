@@ -53,9 +53,9 @@ import org.springframework.web.context.support.StandardServletEnvironment;
  * @author Madhura Bhave
  * @author Artsiom Yudovin
  * @since 1.3.0
- */
+ */     //java -Dspring.application.json='{"server":{"port":8081}}' -jar app.jar
 public class SpringApplicationJsonEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
-
+/* 过环境变量或系统属性传递 JSON 格式的配置，覆盖或扩展 application.properties/application.yml 中的配置 */
 	/**
 	 * Name of the {@code spring.application.json} property.
 	 */
@@ -93,7 +93,7 @@ public class SpringApplicationJsonEnvironmentPostProcessor implements Environmen
 	@Override
 	public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
 		MutablePropertySources propertySources = environment.getPropertySources();
-		propertySources.stream().map(JsonPropertyValue::get).filter(Objects::nonNull).findFirst()
+		propertySources.stream().map(JsonPropertyValue::get).filter(Objects::nonNull).findFirst()//解析spring.application.json数据源
 				.ifPresent((v) -> processJson(environment, v));
 	}
 

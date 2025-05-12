@@ -82,8 +82,8 @@ class ConfigDataImporter {
 			List<ConfigDataLocation> locations) {
 		try {
 			Profiles profiles = (activationContext != null) ? activationContext.getProfiles() : null;
-			List<ConfigDataResolutionResult> resolved = resolve(locationResolverContext, profiles, locations);
-			return load(loaderContext, resolved);
+			List<ConfigDataResolutionResult> resolved = resolve(locationResolverContext, profiles, locations);/* 解析配置文件路径，如 file:./application.yaml */
+			return load(loaderContext, resolved);/* ## 加载application.properties等配置*/
 		}
 		catch (IOException ex) {
 			throw new IllegalStateException("IO error on loading imports from " + locations, ex);
@@ -94,7 +94,7 @@ class ConfigDataImporter {
 			Profiles profiles, List<ConfigDataLocation> locations) {
 		List<ConfigDataResolutionResult> resolved = new ArrayList<>(locations.size());
 		for (ConfigDataLocation location : locations) {
-			resolved.addAll(resolve(locationResolverContext, profiles, location));
+			resolved.addAll(resolve(locationResolverContext, profiles, location));/* 解析配置文件路径*/
 		}
 		return Collections.unmodifiableList(resolved);
 	}
@@ -102,7 +102,7 @@ class ConfigDataImporter {
 	private List<ConfigDataResolutionResult> resolve(ConfigDataLocationResolverContext locationResolverContext,
 			Profiles profiles, ConfigDataLocation location) {
 		try {
-			return this.resolvers.resolve(locationResolverContext, location, profiles);
+			return this.resolvers.resolve(locationResolverContext, location, profiles);/* 解析配置文件路径*/
 		}
 		catch (ConfigDataNotFoundException ex) {
 			handle(ex, location, null);
@@ -125,7 +125,7 @@ class ConfigDataImporter {
 			}
 			else {
 				try {
-					ConfigData loaded = this.loaders.load(loaderContext, resource);
+					ConfigData loaded = this.loaders.load(loaderContext, resource);/* ## 加载application.properties等配置*/
 					if (loaded != null) {
 						this.loaded.add(resource);
 						this.loadedLocations.add(location);

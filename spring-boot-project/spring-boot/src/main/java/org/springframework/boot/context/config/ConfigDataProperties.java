@@ -47,7 +47,7 @@ class ConfigDataProperties {
 
 	private static final Bindable<String[]> BINDABLE_STRING_ARRAY = Bindable.of(String[].class);
 
-	private final List<ConfigDataLocation> imports;
+	private final List<ConfigDataLocation> imports;  /* 配置文件路径，例如file:./;optional:file:./config/;optional:file:./config/*/
 
 	private final Activate activate;
 

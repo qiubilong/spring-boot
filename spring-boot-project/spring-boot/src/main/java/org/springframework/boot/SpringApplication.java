@@ -211,7 +211,7 @@ public class SpringApplication {
 
 	private List<ApplicationListener<?>> listeners;
 
-	private Map<String, Object> defaultProperties;
+	private Map<String, Object> defaultProperties;        //指定配置
 
 	private List<BootstrapRegistryInitializer> bootstrapRegistryInitializers;
 
@@ -294,24 +294,24 @@ public class SpringApplication {
 		DefaultBootstrapContext bootstrapContext = createBootstrapContext();
 		ConfigurableApplicationContext context = null;
 		configureHeadlessProperty();
-		SpringApplicationRunListeners listeners = getRunListeners(args);
+		SpringApplicationRunListeners listeners = getRunListeners(args);//springboot运行事件发布器 - EventPublishingRunListener
 		listeners.starting(bootstrapContext, this.mainApplicationClass);
 		try {
-			ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
-			ConfigurableEnvironment environment = prepareEnvironment(listeners, bootstrapContext, applicationArguments);
+			ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);//解析命令行参数解析
+			ConfigurableEnvironment environment = prepareEnvironment(listeners, bootstrapContext, applicationArguments);/* ## 创建运行配置环境 - ApplicationServletEnvironment -->加载application.properties等配置文件   */
 			configureIgnoreBeanInfo(environment);
 			Banner printedBanner = printBanner(environment);
-			context = createApplicationContext();
+			context = createApplicationContext(); /* ## 创建spring容器 - AnnotationConfigServletWebServerApplicationContext */
 			context.setApplicationStartup(this.applicationStartup);
-			prepareContext(bootstrapContext, context, environment, listeners, applicationArguments, printedBanner);
-			refreshContext(context);
+			prepareContext(bootstrapContext, context, environment, listeners, applicationArguments, printedBanner);/* ##  准备spring容器环境 */
+			refreshContext(context);/* ## 启动spring容器，扫描实例化Bean */
 			afterRefresh(context, applicationArguments);
 			Duration timeTakenToStartup = Duration.ofNanos(System.nanoTime() - startTime);
 			if (this.logStartupInfo) {
 				new StartupInfoLogger(this.mainApplicationClass).logStarted(getApplicationLog(), timeTakenToStartup);
 			}
 			listeners.started(context, timeTakenToStartup);
-			callRunners(context, applicationArguments);
+			callRunners(context, applicationArguments);//命令参数回调
 		}
 		catch (Throwable ex) {
 			handleRunFailure(context, ex, listeners);
@@ -333,14 +333,14 @@ public class SpringApplication {
 		this.bootstrapRegistryInitializers.forEach((initializer) -> initializer.initialize(bootstrapContext));
 		return bootstrapContext;
 	}
-
+    /* 创建配置环境对象 */
 	private ConfigurableEnvironment prepareEnvironment(SpringApplicationRunListeners listeners,
 			DefaultBootstrapContext bootstrapContext, ApplicationArguments applicationArguments) {
 		// Create and configure the environment
-		ConfigurableEnvironment environment = getOrCreateEnvironment();
+		ConfigurableEnvironment environment = getOrCreateEnvironment();/* 创建运行配置对象 -->  webType -> ApplicationServletEnvironment */
 		configureEnvironment(environment, applicationArguments.getSourceArgs());
 		ConfigurationPropertySources.attach(environment);
-		listeners.environmentPrepared(bootstrapContext, environment);
+		listeners.environmentPrepared(bootstrapContext, environment);/* 事件 -->EnvironmentPostProcessorApplicationListener -->加载application.properties等配置文件 */
 		DefaultPropertiesPropertySource.moveToEnd(environment);
 		Assert.state(!environment.containsProperty("spring.main.environment-prefix"),
 				"Environment prefix cannot be set via properties.");
@@ -348,7 +348,7 @@ public class SpringApplication {
 		if (!this.isCustomEnvironment) {
 			environment = convertEnvironment(environment);
 		}
-		ConfigurationPropertySources.attach(environment);
+		ConfigurationPropertySources.attach(environment);/* ## 添加聚合配置源 - ConfigurationPropertySourcesPropertySource -->聚合配置  */
 		return environment;
 	}
 
@@ -385,7 +385,7 @@ public class SpringApplication {
 			ApplicationArguments applicationArguments, Banner printedBanner) {
 		context.setEnvironment(environment);
 		postProcessApplicationContext(context);
-		applyInitializers(context);
+		applyInitializers(context); /* 回调容器初始化ApplicationContextInitializer */
 		listeners.contextPrepared(context);
 		bootstrapContext.close(context);
 		if (this.logStartupInfo) {
@@ -399,20 +399,20 @@ public class SpringApplication {
 			beanFactory.registerSingleton("springBootBanner", printedBanner);
 		}
 		if (beanFactory instanceof AbstractAutowireCapableBeanFactory) {
-			((AbstractAutowireCapableBeanFactory) beanFactory).setAllowCircularReferences(this.allowCircularReferences);
+			((AbstractAutowireCapableBeanFactory) beanFactory).setAllowCircularReferences(this.allowCircularReferences);//是否允许循环依赖
 			if (beanFactory instanceof DefaultListableBeanFactory) {
 				((DefaultListableBeanFactory) beanFactory)
 						.setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
 			}
 		}
-		if (this.lazyInitialization) {
+		if (this.lazyInitialization) {//将所有的bean设置为懒加载
 			context.addBeanFactoryPostProcessor(new LazyInitializationBeanFactoryPostProcessor());
 		}
 		context.addBeanFactoryPostProcessor(new PropertySourceOrderingBeanFactoryPostProcessor(context));
 		// Load the sources
 		Set<Object> sources = getAllSources();
 		Assert.notEmpty(sources, "Sources must not be empty");
-		load(context, sources.toArray(new Object[0]));
+		load(context, sources.toArray(new Object[0])); /* 注入配置类BeanDefinition（AppMain.class） */
 		listeners.contextLoaded(context);
 	}
 
@@ -470,7 +470,7 @@ public class SpringApplication {
 	private ConfigurableEnvironment getOrCreateEnvironment() {
 		if (this.environment != null) {
 			return this.environment;
-		}
+		}  //DefaultApplicationContextFactory根据webType创建环境对象 - AnnotationConfigServletWebServerApplicationContext.Factory - ApplicationServletEnvironment
 		ConfigurableEnvironment environment = this.applicationContextFactory.createEnvironment(this.webApplicationType);
 		if (environment == null && this.applicationContextFactory != ApplicationContextFactory.DEFAULT) {
 			environment = ApplicationContextFactory.DEFAULT.createEnvironment(this.webApplicationType);
@@ -493,7 +493,7 @@ public class SpringApplication {
 		if (this.addConversionService) {
 			environment.setConversionService(new ApplicationConversionService());
 		}
-		configurePropertySources(environment, args);
+		configurePropertySources(environment, args);//添加代码指定配置 & 命令行配置
 		configureProfiles(environment, args);
 	}
 
@@ -506,7 +506,7 @@ public class SpringApplication {
 	 */
 	protected void configurePropertySources(ConfigurableEnvironment environment, String[] args) {
 		MutablePropertySources sources = environment.getPropertySources();
-		if (!CollectionUtils.isEmpty(this.defaultProperties)) {
+		if (!CollectionUtils.isEmpty(this.defaultProperties)) {//解析配置，代码指定
 			DefaultPropertiesPropertySource.addOrMerge(this.defaultProperties, sources);
 		}
 		if (this.addCommandLineProperties && args.length > 0) {
@@ -520,7 +520,7 @@ public class SpringApplication {
 				sources.replace(name, composite);
 			}
 			else {
-				sources.addFirst(new SimpleCommandLinePropertySource(args));
+				sources.addFirst(new SimpleCommandLinePropertySource(args));//配置解析，程序命令行 - k1=v1 k2=v2
 			}
 		}
 	}
@@ -577,7 +577,7 @@ public class SpringApplication {
 	 * @see #setApplicationContextFactory(ApplicationContextFactory)
 	 */
 	protected ConfigurableApplicationContext createApplicationContext() {
-		return this.applicationContextFactory.create(this.webApplicationType);
+		return this.applicationContextFactory.create(this.webApplicationType);/* DefaultApplicationContextFactory */
 	}
 
 	/**

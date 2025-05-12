@@ -97,7 +97,7 @@ class ConfigDataEnvironmentContributors implements Iterable<ConfigDataEnvironmen
 		ConfigDataEnvironmentContributors result = this;
 		int processed = 0;
 		while (true) {
-			ConfigDataEnvironmentContributor contributor = getNextToProcess(result, activationContext, importPhase);
+			ConfigDataEnvironmentContributor contributor = getNextToProcess(result, activationContext, importPhase);//找到一个需要加载配置文件处理器
 			if (contributor == null) {
 				this.logger.trace(LogMessage.format("Processed imports for of %d contributors", processed));
 				return result;
@@ -111,9 +111,9 @@ class ConfigDataEnvironmentContributors implements Iterable<ConfigDataEnvironmen
 			ConfigDataLocationResolverContext locationResolverContext = new ContributorConfigDataLocationResolverContext(
 					result, contributor, activationContext);
 			ConfigDataLoaderContext loaderContext = new ContributorDataLoaderContext(this);
-			List<ConfigDataLocation> imports = contributor.getImports();
+			List<ConfigDataLocation> imports = contributor.getImports();//配置路径 - ooptional:classpath:/;optional:classpath:/config/
 			this.logger.trace(LogMessage.format("Processing imports %s", imports));
-			Map<ConfigDataResolutionResult, ConfigData> imported = importer.resolveAndLoad(activationContext,
+			Map<ConfigDataResolutionResult, ConfigData> imported = importer.resolveAndLoad(activationContext, /* ## 加载程序员配置文件application.properties等 */
 					locationResolverContext, loaderContext, imports);
 			this.logger.trace(LogMessage.of(() -> getImportedMessage(imported.keySet())));
 			ConfigDataEnvironmentContributor contributorAndChildren = contributor.withChildren(importPhase,
