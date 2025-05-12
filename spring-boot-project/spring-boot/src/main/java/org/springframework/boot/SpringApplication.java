@@ -161,7 +161,7 @@ import org.springframework.util.StringUtils;
  * @see #run(Class[], String[])
  * @see #SpringApplication(Class...)
  */
-public class SpringApplication {
+public class SpringApplication {   /* springboot启动类 */
 
 	/**
 	 * Default banner location.
@@ -179,7 +179,7 @@ public class SpringApplication {
 
 	static final SpringApplicationShutdownHook shutdownHook = new SpringApplicationShutdownHook();
 
-	private Set<Class<?>> primarySources;
+	private Set<Class<?>> primarySources;                /* 配置类AppMain.class <-- SpringApplication.run(AppMain.class, args); */
 
 	private Set<String> sources = new LinkedHashSet<>();
 
@@ -199,7 +199,7 @@ public class SpringApplication {
 
 	private BeanNameGenerator beanNameGenerator;
 
-	private ConfigurableEnvironment environment;
+	private ConfigurableEnvironment environment;   /* ## 环境变量以及配置文件 */
 
 	private WebApplicationType webApplicationType;
 
@@ -207,9 +207,9 @@ public class SpringApplication {
 
 	private boolean registerShutdownHook = true;
 
-	private List<ApplicationContextInitializer<?>> initializers;
+	private List<ApplicationContextInitializer<?>> initializers;  /* spring容器初始化器 */
 
-	private List<ApplicationListener<?>> listeners;
+	private List<ApplicationListener<?>> listeners;              /* spring事件监听器 */
 
 	private Map<String, Object> defaultProperties;
 
@@ -259,12 +259,12 @@ public class SpringApplication {
 	public SpringApplication(ResourceLoader resourceLoader, Class<?>... primarySources) {
 		this.resourceLoader = resourceLoader;
 		Assert.notNull(primarySources, "PrimarySources must not be null");
-		this.primarySources = new LinkedHashSet<>(Arrays.asList(primarySources));
-		this.webApplicationType = WebApplicationType.deduceFromClasspath();
+		this.primarySources = new LinkedHashSet<>(Arrays.asList(primarySources)); /* 启动配置主类，SpringApplication.run(AppMain.class, args); */
+		this.webApplicationType = WebApplicationType.deduceFromClasspath(); /* 应用类型推断 Web or App */
 		this.bootstrapRegistryInitializers = new ArrayList<>(
 				getSpringFactoriesInstances(BootstrapRegistryInitializer.class));
-		setInitializers((Collection) getSpringFactoriesInstances(ApplicationContextInitializer.class));
-		setListeners((Collection) getSpringFactoriesInstances(ApplicationListener.class));
+		setInitializers((Collection) getSpringFactoriesInstances(ApplicationContextInitializer.class)); /* META-INF/spring.factories中读取 ApplicationContextInitializer */
+		setListeners((Collection) getSpringFactoriesInstances(ApplicationListener.class));/* 扫描 META-INF/spring.factories ApplicationListener */
 		this.mainApplicationClass = deduceMainApplicationClass();
 	}
 
@@ -294,11 +294,11 @@ public class SpringApplication {
 		DefaultBootstrapContext bootstrapContext = createBootstrapContext();
 		ConfigurableApplicationContext context = null;
 		configureHeadlessProperty();
-		SpringApplicationRunListeners listeners = getRunListeners(args);
+		SpringApplicationRunListeners listeners = getRunListeners(args);//运行事件发布器 - EventPublishingRunListener
 		listeners.starting(bootstrapContext, this.mainApplicationClass);
 		try {
-			ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
-			ConfigurableEnvironment environment = prepareEnvironment(listeners, bootstrapContext, applicationArguments);
+			ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);//命令行参数
+			ConfigurableEnvironment environment = prepareEnvironment(listeners, bootstrapContext, applicationArguments);/* ## 解析配置和环境变量 */
 			configureIgnoreBeanInfo(environment);
 			Banner printedBanner = printBanner(environment);
 			context = createApplicationContext();
@@ -431,7 +431,7 @@ public class SpringApplication {
 	private SpringApplicationRunListeners getRunListeners(String[] args) {
 		Class<?>[] types = new Class<?>[] { SpringApplication.class, String[].class };
 		return new SpringApplicationRunListeners(logger,
-				getSpringFactoriesInstances(SpringApplicationRunListener.class, types, this, args),
+				getSpringFactoriesInstances(SpringApplicationRunListener.class, types, this, args), /* springboot/META-INF/spring.factories中 EventPublishingRunListener */
 				this.applicationStartup);
 	}
 
@@ -442,8 +442,8 @@ public class SpringApplication {
 	private <T> Collection<T> getSpringFactoriesInstances(Class<T> type, Class<?>[] parameterTypes, Object... args) {
 		ClassLoader classLoader = getClassLoader();
 		// Use names and ensure unique to protect against duplicates
-		Set<String> names = new LinkedHashSet<>(SpringFactoriesLoader.loadFactoryNames(type, classLoader));
-		List<T> instances = createSpringFactoriesInstances(type, parameterTypes, classLoader, args, names);
+		Set<String> names = new LinkedHashSet<>(SpringFactoriesLoader.loadFactoryNames(type, classLoader));/* ## 加载META-INF/spring.factories文件 */
+		List<T> instances = createSpringFactoriesInstances(type, parameterTypes, classLoader, args, names); /* 实例化 */
 		AnnotationAwareOrderComparator.sort(instances);
 		return instances;
 	}
@@ -1303,7 +1303,7 @@ public class SpringApplication {
 	 * @return the running {@link ApplicationContext}
 	 */
 	public static ConfigurableApplicationContext run(Class<?> primarySource, String... args) {
-		return run(new Class<?>[] { primarySource }, args);
+		return run(new Class<?>[] { primarySource }, args);/* 启动springbooot */
 	}
 
 	/**
@@ -1314,7 +1314,7 @@ public class SpringApplication {
 	 * @return the running {@link ApplicationContext}
 	 */
 	public static ConfigurableApplicationContext run(Class<?>[] primarySources, String[] args) {
-		return new SpringApplication(primarySources).run(args);
+		return new SpringApplication(primarySources).run(args);/* 启动springbooot */
 	}
 
 	/**
