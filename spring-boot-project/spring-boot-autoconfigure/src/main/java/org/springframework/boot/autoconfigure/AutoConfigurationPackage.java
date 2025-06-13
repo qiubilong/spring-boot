@@ -38,7 +38,7 @@ import org.springframework.context.annotation.Import;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import(AutoConfigurationPackages.Registrar.class)
+@Import(AutoConfigurationPackages.Registrar.class) /* 注入扫描路径信息Bean -> mybatis等使用  */
 public @interface AutoConfigurationPackage {
 
 	/**

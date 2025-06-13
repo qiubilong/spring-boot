@@ -132,7 +132,7 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector, 
 
 	@Override
 	public Class<? extends Group> getImportGroup() {
-		return AutoConfigurationGroup.class;
+		return AutoConfigurationGroup.class; /* 导入配置组 */
 	}
 
 	protected boolean isEnabled(AnnotationMetadata metadata) {

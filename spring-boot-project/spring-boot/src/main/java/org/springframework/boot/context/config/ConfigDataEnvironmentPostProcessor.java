@@ -99,7 +99,7 @@ public class ConfigDataEnvironmentPostProcessor implements EnvironmentPostProces
 		try {
 			this.logger.trace("Post-processing environment to add config data");
 			resourceLoader = (resourceLoader != null) ? resourceLoader : new DefaultResourceLoader();
-			getConfigDataEnvironment(environment, resourceLoader, additionalProfiles).processAndApply();/* 加载配置文件 application.properties等 */
+			getConfigDataEnvironment(environment, resourceLoader, additionalProfiles).processAndApply();/* 创建 加载配置文件 环境对象 */
 		}
 		catch (UseLegacyConfigProcessingException ex) {
 			this.logger.debug(LogMessage.format("Switching to legacy config file processing [%s]",
@@ -111,7 +111,7 @@ public class ConfigDataEnvironmentPostProcessor implements EnvironmentPostProces
 
 	ConfigDataEnvironment getConfigDataEnvironment(ConfigurableEnvironment environment, ResourceLoader resourceLoader,
 			Collection<String> additionalProfiles) {
-		return new ConfigDataEnvironment(this.logFactory, this.bootstrapContext, environment, resourceLoader, /* 加载application.properties等 */
+		return new ConfigDataEnvironment(this.logFactory, this.bootstrapContext, environment, resourceLoader, /* 创建 加载配置文件 环境对象 */
 				additionalProfiles, this.environmentUpdateListener);
 	}
 

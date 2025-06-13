@@ -40,7 +40,7 @@ org.springframework.boot.context.config.DelegatingApplicationContextInitializer,
 org.springframework.boot.rsocket.context.RSocketPortInfoApplicationContextInitializer,\
 org.springframework.boot.web.context.ServerPortInfoApplicationContextInitializer
 
-# Application Listeners -- ????????? - EnvironmentPostProcessorApplicationListener
+# Application Listeners -- 解析加载配置 -> EnvironmentPostProcessorApplicationListener
 org.springframework.context.ApplicationListener=\
 org.springframework.boot.ClearCachesApplicationListener,\
 org.springframework.boot.builder.ParentContextCloserApplicationListener,\
@@ -50,7 +50,8 @@ org.springframework.boot.context.config.DelegatingApplicationListener,\
 org.springframework.boot.context.logging.LoggingApplicationListener,\
 org.springframework.boot.env.EnvironmentPostProcessorApplicationListener
 
-# Environment Post Processors -- ??application.yaml?? - ConfigDataEnvironmentPostProcessor
+#CloudFoundryVcapEnvironmentPostProcessor亚马逊云配置，忽略
+# Environment Post Processors -- 加载程序配置 application.yaml - ConfigDataEnvironmentPostProcessor
 org.springframework.boot.env.EnvironmentPostProcessor=\
 org.springframework.boot.cloud.CloudFoundryVcapEnvironmentPostProcessor,\
 org.springframework.boot.context.config.ConfigDataEnvironmentPostProcessor,\

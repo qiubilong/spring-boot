@@ -177,9 +177,9 @@ public class SpringApplication {
 
 	private static final Log logger = LogFactory.getLog(SpringApplication.class);
 
-	static final SpringApplicationShutdownHook shutdownHook = new SpringApplicationShutdownHook();
+	static final SpringApplicationShutdownHook shutdownHook = new SpringApplicationShutdownHook(); //关闭钩子
 
-	private Set<Class<?>> primarySources;
+	private Set<Class<?>> primarySources; /* 主配置类 - new SpringApplication(MyApplication.class); */
 
 	private Set<String> sources = new LinkedHashSet<>();
 
@@ -199,7 +199,7 @@ public class SpringApplication {
 
 	private BeanNameGenerator beanNameGenerator;
 
-	private ConfigurableEnvironment environment;
+	private ConfigurableEnvironment environment; //环境配置key=value
 
 	private WebApplicationType webApplicationType;
 
@@ -209,9 +209,9 @@ public class SpringApplication {
 
 	private List<ApplicationContextInitializer<?>> initializers;
 
-	private List<ApplicationListener<?>> listeners;
+	private List<ApplicationListener<?>> listeners;  // 应用事件监听器 (环境配置监听器=  )
 
-	private Map<String, Object> defaultProperties;        //指定配置
+	private Map<String, Object> defaultProperties;        //默认配置 -- 优先级最低
 
 	private List<BootstrapRegistryInitializer> bootstrapRegistryInitializers;
 
@@ -259,11 +259,11 @@ public class SpringApplication {
 	public SpringApplication(ResourceLoader resourceLoader, Class<?>... primarySources) {
 		this.resourceLoader = resourceLoader;
 		Assert.notNull(primarySources, "PrimarySources must not be null");
-		this.primarySources = new LinkedHashSet<>(Arrays.asList(primarySources));
-		this.webApplicationType = WebApplicationType.deduceFromClasspath();
+		this.primarySources = new LinkedHashSet<>(Arrays.asList(primarySources)); /* ## 主配置类 */
+		this.webApplicationType = WebApplicationType.deduceFromClasspath();//应用类型推断
 		this.bootstrapRegistryInitializers = new ArrayList<>(
 				getSpringFactoriesInstances(BootstrapRegistryInitializer.class));
-		setInitializers((Collection) getSpringFactoriesInstances(ApplicationContextInitializer.class));
+		setInitializers((Collection) getSpringFactoriesInstances(ApplicationContextInitializer.class));/* 读取META-INF/spring.factories，ApplicationContextInitializer 容器早期初始化，可以设置变量配置，注入Bean */
 		setListeners((Collection) getSpringFactoriesInstances(ApplicationListener.class));
 		this.mainApplicationClass = deduceMainApplicationClass();
 	}
@@ -298,7 +298,7 @@ public class SpringApplication {
 		listeners.starting(bootstrapContext, this.mainApplicationClass);
 		try {
 			ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);//解析命令行参数解析
-			ConfigurableEnvironment environment = prepareEnvironment(listeners, bootstrapContext, applicationArguments);/* ## 创建运行配置环境 - ApplicationServletEnvironment -->加载application.properties等配置文件   */
+			ConfigurableEnvironment environment = prepareEnvironment(listeners, bootstrapContext, applicationArguments);/* ## 创建配置环境 - ApplicationServletEnvironment -->加载application.properties等配置文件   */
 			configureIgnoreBeanInfo(environment);
 			Banner printedBanner = printBanner(environment);
 			context = createApplicationContext(); /* ## 创建spring容器 - AnnotationConfigServletWebServerApplicationContext */
@@ -340,7 +340,7 @@ public class SpringApplication {
 		ConfigurableEnvironment environment = getOrCreateEnvironment();/* 创建运行配置对象 -->  webType -> ApplicationServletEnvironment */
 		configureEnvironment(environment, applicationArguments.getSourceArgs());
 		ConfigurationPropertySources.attach(environment);
-		listeners.environmentPrepared(bootstrapContext, environment);/* 事件 -->EnvironmentPostProcessorApplicationListener -->加载application.properties等配置文件 */
+		listeners.environmentPrepared(bootstrapContext, environment);/* 事件 --> EnvironmentPostProcessorApplicationListener -->加载application.properties等配置文件 */
 		DefaultPropertiesPropertySource.moveToEnd(environment);
 		Assert.state(!environment.containsProperty("spring.main.environment-prefix"),
 				"Environment prefix cannot be set via properties.");
@@ -1314,7 +1314,7 @@ public class SpringApplication {
 	 * @return the running {@link ApplicationContext}
 	 */
 	public static ConfigurableApplicationContext run(Class<?>[] primarySources, String[] args) {
-		return new SpringApplication(primarySources).run(args);
+		return new SpringApplication(primarySources).run(args);/* 创建SpringApplication，run启动 */
 	}
 
 	/**

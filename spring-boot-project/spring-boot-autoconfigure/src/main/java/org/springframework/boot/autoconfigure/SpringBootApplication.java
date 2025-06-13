@@ -52,10 +52,10 @@ import org.springframework.data.repository.Repository;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@SpringBootConfiguration
-@EnableAutoConfiguration
-@ComponentScan(excludeFilters = { @Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
-		@Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) })
+@SpringBootConfiguration  /* @Component */
+@EnableAutoConfiguration  /* ImportSelect 自动配置类 */
+@ComponentScan(excludeFilters = { @Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class), /* 扫描注册Bean */
+		@Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) })//排除EnableAutoConfiguration
 public @interface SpringBootApplication {
 
 	/**

@@ -80,7 +80,7 @@ public class RandomValuePropertySource extends PropertySource<Random> {
 	}
 
 	@Override
-	public Object getProperty(String name) { //随机数生成器 - random.开头
+	public Object getProperty(String name) { /* 随机数生成器 - random.开头 */
 		if (!name.startsWith(PREFIX)) {
 			return null;
 		}
