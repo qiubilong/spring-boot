@@ -348,7 +348,7 @@ public class SpringApplication {
 		if (!this.isCustomEnvironment) {
 			environment = convertEnvironment(environment);
 		}
-		ConfigurationPropertySources.attach(environment);/* ## 添加聚合配置源 - ConfigurationPropertySourcesPropertySource -->聚合配置  */
+		ConfigurationPropertySources.attach(environment);// 添加聚合配置源 - ConfigurationPropertySourcesPropertySource -->聚合配置
 		return environment;
 	}
 

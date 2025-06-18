@@ -97,7 +97,7 @@ class ConfigDataEnvironmentContributors implements Iterable<ConfigDataEnvironmen
 		ConfigDataEnvironmentContributors result = this;
 		int processed = 0;
 		while (true) {
-			ConfigDataEnvironmentContributor contributor = getNextToProcess(result, activationContext, importPhase);//找到一个需要加载配置文件处理器
+			ConfigDataEnvironmentContributor contributor = getNextToProcess(result, activationContext, importPhase);//找到一个加载配置文件处理器
 			if (contributor == null) {
 				this.logger.trace(LogMessage.format("Processed imports for of %d contributors", processed));
 				return result;

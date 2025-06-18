@@ -88,7 +88,7 @@ class ConfigDataEnvironment {
 	static {
 		List<ConfigDataLocation> locations = new ArrayList<>();  /* ## 默认配置文件搜索路径 */
 		locations.add(ConfigDataLocation.of("optional:classpath:/;optional:classpath:/config/"));
-		locations.add(ConfigDataLocation.of("optional:file:./;optional:file:./config/;optional:file:./config/*/"));
+		locations.add(ConfigDataLocation.of("optional:file:./;optional:file:./config/;optional:file:./config/*/"));/* 优先级更高，不用修改运行jar覆盖配置 */
 		DEFAULT_SEARCH_LOCATIONS = locations.toArray(new ConfigDataLocation[0]);
 	}
 
@@ -206,7 +206,7 @@ class ConfigDataEnvironment {
 
 	private void addInitialImportContributors(List<ConfigDataEnvironmentContributor> initialContributors,
 			ConfigDataLocation[] locations) {
-		for (int i = locations.length - 1; i >= 0; i--) {
+		for (int i = locations.length - 1; i >= 0; i--) {/* DEFAULT_SEARCH_LOCATIONS反转 -- file配置再前，classpath配置在后 */
 			initialContributors.add(createInitialImportContributor(locations[i]));
 		}
 	}
@@ -325,7 +325,7 @@ class ConfigDataEnvironment {
 		checkForInvalidProperties(contributors);
 		checkMandatoryLocations(contributors, activationContext, loadedLocations, optionalLocations);
 		MutablePropertySources propertySources = this.environment.getPropertySources();
-		applyContributor(contributors, activationContext, propertySources); /* 添加application.properties配置源到Environment */
+		applyContributor(contributors, activationContext, propertySources); /* 添加application.properties等配置源到Environment */
 		DefaultPropertiesPropertySource.moveToEnd(propertySources);
 		Profiles profiles = activationContext.getProfiles();
 		this.logger.trace(LogMessage.format("Setting default profiles: %s", profiles.getDefault()));

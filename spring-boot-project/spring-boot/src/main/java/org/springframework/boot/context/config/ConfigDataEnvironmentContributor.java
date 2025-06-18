@@ -51,7 +51,7 @@ import org.springframework.util.CollectionUtils;
  * @author Phillip Webb
  * @author Madhura Bhave
  */
-class ConfigDataEnvironmentContributor implements Iterable<ConfigDataEnvironmentContributor> {
+class ConfigDataEnvironmentContributor implements Iterable<ConfigDataEnvironmentContributor> {//配置项集合
 
 	private static final ConfigData.Options EMPTY_LOCATION_OPTIONS = ConfigData.Options
 			.of(ConfigData.Option.IGNORE_IMPORTS);
