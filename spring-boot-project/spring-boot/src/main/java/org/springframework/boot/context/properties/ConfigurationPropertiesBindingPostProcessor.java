@@ -75,7 +75,7 @@ public class ConfigurationPropertiesBindingPostProcessor
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-		bind(ConfigurationPropertiesBean.get(this.applicationContext, bean, beanName));
+		bind(ConfigurationPropertiesBean.get(this.applicationContext, bean, beanName)); /* 存在注解 ConfigurationProperties --> 配置Bean --> 属性赋值 */
 		return bean;
 	}
 

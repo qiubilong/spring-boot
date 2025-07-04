@@ -68,7 +68,7 @@ public class TomcatWebServer implements WebServer {
 
 	private final boolean autoStart;
 
-	private final GracefulShutdown gracefulShutdown;
+	private final GracefulShutdown gracefulShutdown; /* tomcat优雅关机，默认立即关闭 */
 
 	private volatile boolean started;
 

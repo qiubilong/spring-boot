@@ -25,7 +25,7 @@ import org.springframework.context.SmartLifecycle;
  *
  * @author Andy Wilkinson
  */
-class WebServerStartStopLifecycle implements SmartLifecycle {
+class WebServerStartStopLifecycle implements SmartLifecycle { /* Spring生命周期对象 */
 
 	private final ServletWebServerApplicationContext applicationContext;
 
@@ -39,7 +39,7 @@ class WebServerStartStopLifecycle implements SmartLifecycle {
 	}
 
 	@Override
-	public void start() {
+	public void start() { /* application.finishRefresh()后调用 */
 		this.webServer.start();
 		this.running = true;
 		this.applicationContext
@@ -49,11 +49,11 @@ class WebServerStartStopLifecycle implements SmartLifecycle {
 	@Override
 	public void stop() {
 		this.running = false;
-		this.webServer.stop();
+		this.webServer.stop();/* 关闭Tomcat */
 	}
 
 	@Override
-	public boolean isRunning() {
+	public boolean isRunning() { /* true时才会调用 stop（）  */
 		return this.running;
 	}
 

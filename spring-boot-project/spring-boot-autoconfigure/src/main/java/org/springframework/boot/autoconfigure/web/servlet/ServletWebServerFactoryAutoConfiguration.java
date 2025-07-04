@@ -62,15 +62,15 @@ import org.springframework.web.filter.ForwardedHeaderFilter;
  * @since 2.0.0
  */
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
-@ConditionalOnClass(ServletRequest.class)
+@AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)//自动配置优先级
+@ConditionalOnClass(ServletRequest.class)//存在class
 @ConditionalOnWebApplication(type = Type.SERVLET)
-@EnableConfigurationProperties(ServerProperties.class)
+@EnableConfigurationProperties(ServerProperties.class)//配置Bean
 @Import({ ServletWebServerFactoryAutoConfiguration.BeanPostProcessorsRegistrar.class,
-		ServletWebServerFactoryConfiguration.EmbeddedTomcat.class,
+		ServletWebServerFactoryConfiguration.EmbeddedTomcat.class, /* Tomcat - 配置类 */
 		ServletWebServerFactoryConfiguration.EmbeddedJetty.class,
 		ServletWebServerFactoryConfiguration.EmbeddedUndertow.class })
-public class ServletWebServerFactoryAutoConfiguration {
+public class ServletWebServerFactoryAutoConfiguration { /* Web容器 - 自动 - 配置类 */
 
 	@Bean
 	public ServletWebServerFactoryCustomizer servletWebServerFactoryCustomizer(ServerProperties serverProperties,

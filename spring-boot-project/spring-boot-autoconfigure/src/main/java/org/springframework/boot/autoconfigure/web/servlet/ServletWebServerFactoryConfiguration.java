@@ -64,12 +64,12 @@ import org.springframework.context.annotation.Configuration;
 class ServletWebServerFactoryConfiguration {
 
 	@Configuration(proxyBeanMethods = false)
-	@ConditionalOnClass({ Servlet.class, Tomcat.class, UpgradeProtocol.class })
-	@ConditionalOnMissingBean(value = ServletWebServerFactory.class, search = SearchStrategy.CURRENT)
+	@ConditionalOnClass({ Servlet.class, Tomcat.class, UpgradeProtocol.class })/* 类存在 */
+	@ConditionalOnMissingBean(value = ServletWebServerFactory.class, search = SearchStrategy.CURRENT) /* Bean不存在 */
 	static class EmbeddedTomcat {
 
 		@Bean
-		TomcatServletWebServerFactory tomcatServletWebServerFactory(
+		TomcatServletWebServerFactory tomcatServletWebServerFactory( /* Tomcat创建工厂类 */
 				ObjectProvider<TomcatConnectorCustomizer> connectorCustomizers,
 				ObjectProvider<TomcatContextCustomizer> contextCustomizers,
 				ObjectProvider<TomcatProtocolHandlerCustomizer<?>> protocolHandlerCustomizers) {

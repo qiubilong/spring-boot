@@ -177,14 +177,14 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 		ServletContext servletContext = getServletContext();
 		if (webServer == null && servletContext == null) {
 			StartupStep createWebServer = this.getApplicationStartup().start("spring.boot.webserver.create");
-			ServletWebServerFactory factory = getWebServerFactory();
+			ServletWebServerFactory factory = getWebServerFactory(); /* Tomcat Web工厂 */
 			createWebServer.tag("factory", factory.getClass().toString());
-			this.webServer = factory.getWebServer(getSelfInitializer());/* Spring容器中获取 ServletContextInitializer对象列表 --> 可以注入过滤器servletFilter等   */
+			this.webServer = factory.getWebServer(getSelfInitializer());/* 创建Tomcat --> Spring容器中获取 ServletContextInitializer对象列表 --> 可以注入过滤器servletFilter等   */
 			createWebServer.end();
 			getBeanFactory().registerSingleton("webServerGracefulShutdown",
 					new WebServerGracefulShutdownLifecycle(this.webServer));
 			getBeanFactory().registerSingleton("webServerStartStop",
-					new WebServerStartStopLifecycle(this, this.webServer));
+					new WebServerStartStopLifecycle(this, this.webServer)); /* 监听spring的声明周期 -> 启动/关闭Tomcat */
 		}
 		else if (servletContext != null) {
 			try {

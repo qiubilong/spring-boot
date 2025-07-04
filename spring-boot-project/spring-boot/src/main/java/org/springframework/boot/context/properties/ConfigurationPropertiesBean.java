@@ -61,13 +61,13 @@ public final class ConfigurationPropertiesBean {
 
 	private final String name;
 
-	private final Object instance;
+	private final Object instance;    /* 配置Bean */
 
-	private final ConfigurationProperties annotation;
+	private final ConfigurationProperties annotation; /* 配置前缀等 */
 
 	private final Bindable<?> bindTarget;
 
-	private final BindMethod bindMethod;
+	private final BindMethod bindMethod; /* setXXX方式 -赋值 */
 
 	private ConfigurationPropertiesBean(String name, Object instance, ConfigurationProperties annotation,
 			Bindable<?> bindTarget) {
@@ -258,7 +258,7 @@ public final class ConfigurationPropertiesBean {
 				() -> "Bean '" + beanName + "' is not a @ConfigurationProperties value object");
 		return propertiesBean;
 	}
-
+    /* 配置文件Bean - ConfigurationProperties --> 注入配置 */
 	private static ConfigurationPropertiesBean create(String name, Object instance, Class<?> type, Method factory) {
 		ConfigurationProperties annotation = findAnnotation(instance, type, factory, ConfigurationProperties.class);
 		if (annotation == null) {

@@ -14,6 +14,8 @@ public class AppMain {
 	public static void main(String[] args) throws Exception{
 		ConfigurableApplicationContext context = SpringApplication.run(AppMain.class, args);
 
+
+		context.close();
 		Thread.currentThread().join();
 	}
 }

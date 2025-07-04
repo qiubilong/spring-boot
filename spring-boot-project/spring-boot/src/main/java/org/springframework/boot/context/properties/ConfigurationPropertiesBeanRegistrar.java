@@ -51,13 +51,13 @@ final class ConfigurationPropertiesBeanRegistrar {
 	void register(Class<?> type) {
 		MergedAnnotation<ConfigurationProperties> annotation = MergedAnnotations
 				.from(type, SearchStrategy.TYPE_HIERARCHY).get(ConfigurationProperties.class);
-		register(type, annotation);
+		register(type, annotation); /* 注册 配置Bean */
 	}
 
 	void register(Class<?> type, MergedAnnotation<ConfigurationProperties> annotation) {
 		String name = getName(type, annotation);
 		if (!containsBeanDefinition(name)) {
-			registerBeanDefinition(name, type, annotation);
+			registerBeanDefinition(name, type, annotation);/* 注册 配置Bean */
 		}
 	}
 
@@ -91,7 +91,7 @@ final class ConfigurationPropertiesBeanRegistrar {
 	private BeanDefinition createBeanDefinition(String beanName, Class<?> type) {
 		BindMethod bindMethod = BindMethod.forType(type);
 		RootBeanDefinition definition = new RootBeanDefinition(type);
-		definition.setAttribute(BindMethod.class.getName(), bindMethod);
+		definition.setAttribute(BindMethod.class.getName(), bindMethod);/* 默认setXXX方式注入 */
 		if (bindMethod == BindMethod.VALUE_OBJECT) {
 			definition.setInstanceSupplier(() -> createValueObject(beanName, type));
 		}
