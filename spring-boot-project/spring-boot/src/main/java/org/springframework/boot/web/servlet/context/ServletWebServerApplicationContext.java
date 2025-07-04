@@ -169,7 +169,7 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 		if (isActive()) {
 			AvailabilityChangeEvent.publish(this, ReadinessState.REFUSING_TRAFFIC);
 		}
-		super.doClose();
+		super.doClose();/* 关闭spring容器 */
 	}
 
 	private void createWebServer() {/* 启动Tomcat */

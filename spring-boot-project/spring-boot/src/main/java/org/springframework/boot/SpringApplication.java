@@ -418,7 +418,7 @@ public class SpringApplication {
 
 	private void refreshContext(ConfigurableApplicationContext context) {
 		if (this.registerShutdownHook) {
-			shutdownHook.registerApplicationContext(context);
+			shutdownHook.registerApplicationContext(context); /* 注册spring关闭钩子 */
 		}
 		refresh(context);
 	}

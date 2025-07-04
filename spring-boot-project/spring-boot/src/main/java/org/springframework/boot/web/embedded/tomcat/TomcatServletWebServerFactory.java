@@ -207,7 +207,7 @@ public class TomcatServletWebServerFactory extends AbstractServletWebServerFacto
 		for (Connector additionalConnector : this.additionalTomcatConnectors) {
 			tomcat.getService().addConnector(additionalConnector);
 		}
-		prepareContext(tomcat.getHost(), initializers); /* 注册 Filter */
+		prepareContext(tomcat.getHost(), initializers); /* 注册 ServletFilter */
 		return getTomcatWebServer(tomcat); /* 创建Tomcat */
 	}
 

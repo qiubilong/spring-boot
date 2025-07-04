@@ -47,7 +47,7 @@ class WebServerStartStopLifecycle implements SmartLifecycle { /* Spring生命周
 	}
 
 	@Override
-	public void stop() {
+	public void stop() { /* application.close() --> DefaultLifecycleProcessor.onClose() --> SmartLifecycle.stop() */
 		this.running = false;
 		this.webServer.stop();/* 关闭Tomcat */
 	}

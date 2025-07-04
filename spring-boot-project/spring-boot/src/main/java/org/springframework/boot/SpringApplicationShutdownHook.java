@@ -45,7 +45,7 @@ import org.springframework.util.Assert;
  * @author Phillip Webb
  * @author Brian Clozel
  */
-class SpringApplicationShutdownHook implements Runnable {
+class SpringApplicationShutdownHook implements Runnable { /* Spring关闭钩子 */
 
 	private static final int SLEEP = 50;
 
@@ -80,7 +80,7 @@ class SpringApplicationShutdownHook implements Runnable {
 
 	private void addRuntimeShutdownHookIfNecessary() {
 		if (this.shutdownHookAdded.compareAndSet(false, true)) {
-			addRuntimeShutdownHook();
+			addRuntimeShutdownHook(); /* 注册spring关闭钩子 */
 		}
 	}
 
@@ -101,7 +101,7 @@ class SpringApplicationShutdownHook implements Runnable {
 	}
 
 	@Override
-	public void run() {
+	public void run() { /* spring关闭钩子 */
 		Set<ConfigurableApplicationContext> contexts;
 		Set<ConfigurableApplicationContext> closedContexts;
 		Set<Runnable> actions;
@@ -111,7 +111,7 @@ class SpringApplicationShutdownHook implements Runnable {
 			closedContexts = new LinkedHashSet<>(this.closedContexts);
 			actions = new LinkedHashSet<>(this.handlers.getActions());
 		}
-		contexts.forEach(this::closeAndWait);
+		contexts.forEach(this::closeAndWait); /* 关闭spring容器 */
 		closedContexts.forEach(this::closeAndWait);
 		actions.forEach(Runnable::run);
 	}
@@ -142,14 +142,14 @@ class SpringApplicationShutdownHook implements Runnable {
 		if (!context.isActive()) {
 			return;
 		}
-		context.close();
+		context.close(); /* 关闭spring容器 */
 		try {
 			int waited = 0;
 			while (context.isActive()) {
-				if (waited > TIMEOUT) {
+				if (waited > TIMEOUT) {/* 等待10分钟 */
 					throw new TimeoutException();
 				}
-				Thread.sleep(SLEEP);
+				Thread.sleep(SLEEP);  /*  休眠50ms */
 				waited += SLEEP;
 			}
 		}
