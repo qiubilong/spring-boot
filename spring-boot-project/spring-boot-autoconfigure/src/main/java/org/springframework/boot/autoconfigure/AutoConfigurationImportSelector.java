@@ -120,7 +120,7 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector, 
 			return EMPTY_ENTRY;
 		}
 		AnnotationAttributes attributes = getAttributes(annotationMetadata);
-		List<String> configurations = getCandidateConfigurations(annotationMetadata, attributes);
+		List<String> configurations = getCandidateConfigurations(annotationMetadata, attributes); /* 加载META-INF/spring.factories自动配置 */
 		configurations = removeDuplicates(configurations);
 		Set<String> exclusions = getExclusions(annotationMetadata, attributes);
 		checkExcludedClasses(configurations, exclusions);
@@ -175,7 +175,7 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector, 
 	 * @return a list of candidate configurations
 	 */
 	protected List<String> getCandidateConfigurations(AnnotationMetadata metadata, AnnotationAttributes attributes) {
-		List<String> configurations = SpringFactoriesLoader.loadFactoryNames(getSpringFactoriesLoaderFactoryClass(),
+		List<String> configurations = SpringFactoriesLoader.loadFactoryNames(getSpringFactoriesLoaderFactoryClass(),/*  EnableAutoConfiguration.class */
 				getBeanClassLoader());
 		Assert.notEmpty(configurations, "No auto configuration classes found in META-INF/spring.factories. If you "
 				+ "are using a custom packaging, make sure that file is correct.");
@@ -431,7 +431,7 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector, 
 							AutoConfigurationImportSelector.class.getSimpleName(),
 							deferredImportSelector.getClass().getName()));
 			AutoConfigurationEntry autoConfigurationEntry = ((AutoConfigurationImportSelector) deferredImportSelector)
-					.getAutoConfigurationEntry(annotationMetadata);
+					.getAutoConfigurationEntry(annotationMetadata); /* 加载 EnableAutoConfiguration.class */
 			this.autoConfigurationEntries.add(autoConfigurationEntry);
 			for (String importClassName : autoConfigurationEntry.getConfigurations()) {
 				this.entries.putIfAbsent(importClassName, annotationMetadata);

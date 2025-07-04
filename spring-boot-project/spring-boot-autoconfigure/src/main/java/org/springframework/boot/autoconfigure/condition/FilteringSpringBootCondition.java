@@ -124,7 +124,7 @@ abstract class FilteringSpringBootCondition extends SpringBootCondition
 		MISSING {
 
 			@Override
-			public boolean matches(String className, ClassLoader classLoader) {
+			public boolean matches(String className, ClassLoader classLoader) { /* 某类不存在 */
 				return !isPresent(className, classLoader);
 			}
 
@@ -132,7 +132,7 @@ abstract class FilteringSpringBootCondition extends SpringBootCondition
 
 		abstract boolean matches(String className, ClassLoader classLoader);
 
-		static boolean isPresent(String className, ClassLoader classLoader) {
+		static boolean isPresent(String className, ClassLoader classLoader) { /* 类加载器 -- 尝试加载某类 */
 			if (classLoader == null) {
 				classLoader = ClassUtils.getDefaultClassLoader();
 			}

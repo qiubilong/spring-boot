@@ -41,7 +41,7 @@ import org.springframework.util.StringUtils;
  * @see ConditionalOnMissingClass
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
-class OnClassCondition extends FilteringSpringBootCondition {
+class OnClassCondition extends FilteringSpringBootCondition { /* 条件匹配 - 某类是否存在 - getMatchOutcome */
 
 	@Override
 	protected final ConditionOutcome[] getOutcomes(String[] autoConfigurationClasses,
@@ -90,10 +90,10 @@ class OnClassCondition extends FilteringSpringBootCondition {
 	public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
 		ClassLoader classLoader = context.getClassLoader();
 		ConditionMessage matchMessage = ConditionMessage.empty();
-		List<String> onClasses = getCandidates(metadata, ConditionalOnClass.class);
+		List<String> onClasses = getCandidates(metadata, ConditionalOnClass.class); /* Class存在条件 */
 		if (onClasses != null) {
 			List<String> missing = filter(onClasses, ClassNameFilter.MISSING, classLoader);
-			if (!missing.isEmpty()) {
+			if (!missing.isEmpty()) { /* 某类不存在，返回不匹配 */
 				return ConditionOutcome.noMatch(ConditionMessage.forCondition(ConditionalOnClass.class)
 						.didNotFind("required class", "required classes").items(Style.QUOTE, missing));
 			}
@@ -112,7 +112,7 @@ class OnClassCondition extends FilteringSpringBootCondition {
 					.didNotFind("unwanted class", "unwanted classes")
 					.items(Style.QUOTE, filter(onMissingClasses, ClassNameFilter.MISSING, classLoader));
 		}
-		return ConditionOutcome.match(matchMessage);
+		return ConditionOutcome.match(matchMessage);/* 满足条件 */
 	}
 
 	private List<String> getCandidates(AnnotatedTypeMetadata metadata, Class<?> annotationType) {

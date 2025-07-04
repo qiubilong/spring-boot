@@ -73,7 +73,7 @@ import org.springframework.util.StringUtils;
  * @see ConditionalOnMissingBean
  * @see ConditionalOnSingleCandidate
  */
-@Order(Ordered.LOWEST_PRECEDENCE)
+@Order(Ordered.LOWEST_PRECEDENCE)   /* 条件匹配 - 某Bean是否存在 - getMatchOutcome（） */
 class OnBeanCondition extends FilteringSpringBootCondition implements ConfigurationCondition {
 
 	@Override
@@ -115,9 +115,9 @@ class OnBeanCondition extends FilteringSpringBootCondition implements Configurat
 		ConditionMessage matchMessage = ConditionMessage.empty();
 		MergedAnnotations annotations = metadata.getAnnotations();
 		if (annotations.isPresent(ConditionalOnBean.class)) {
-			Spec<ConditionalOnBean> spec = new Spec<>(context, metadata, annotations, ConditionalOnBean.class);
-			MatchResult matchResult = getMatchingBeans(context, spec);
-			if (!matchResult.isAllMatched()) {
+			Spec<ConditionalOnBean> spec = new Spec<>(context, metadata, annotations, ConditionalOnBean.class); /* 某Bean是否存在 */
+			MatchResult matchResult = getMatchingBeans(context, spec);/* 查找Bean - Bean Class or Name */
+			if (!matchResult.isAllMatched()) { /* 存在不匹配 */
 				String reason = createOnBeanNoMatchReason(matchResult);
 				return ConditionOutcome.noMatch(spec.message().because(reason));
 			}
@@ -177,7 +177,7 @@ class OnBeanCondition extends FilteringSpringBootCondition implements Configurat
 		MatchResult result = new MatchResult();
 		Set<String> beansIgnoredByType = getNamesOfBeansIgnoredByType(classLoader, beanFactory, considerHierarchy,
 				spec.getIgnoredTypes(), parameterizedContainers);
-		for (String type : spec.getTypes()) {
+		for (String type : spec.getTypes()) { /* 先判断 Bean - Class */
 			Collection<String> typeMatches = getBeanNamesForType(classLoader, considerHierarchy, beanFactory, type,
 					parameterizedContainers);
 			Iterator<String> iterator = typeMatches.iterator();
@@ -205,7 +205,7 @@ class OnBeanCondition extends FilteringSpringBootCondition implements Configurat
 				result.recordMatchedAnnotation(annotation, annotationMatches);
 			}
 		}
-		for (String beanName : spec.getNames()) {
+		for (String beanName : spec.getNames()) {/* 后判断 Bean - Name */
 			if (!beansIgnoredByType.contains(beanName) && containsBean(beanFactory, beanName, considerHierarchy)) {
 				result.recordMatchedName(beanName);
 			}
@@ -404,9 +404,9 @@ class OnBeanCondition extends FilteringSpringBootCondition implements Configurat
 
 		private final Class<? extends Annotation> annotationType;
 
-		private final Set<String> names;
+		private final Set<String> names; /* bean - Name */
 
-		private final Set<String> types;
+		private final Set<String> types; /* bean - Class */
 
 		private final Set<String> annotations;
 

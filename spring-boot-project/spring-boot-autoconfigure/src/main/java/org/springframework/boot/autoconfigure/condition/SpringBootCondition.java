@@ -44,10 +44,10 @@ public abstract class SpringBootCondition implements Condition {
 	public final boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
 		String classOrMethodName = getClassOrMethodName(metadata);
 		try {
-			ConditionOutcome outcome = getMatchOutcome(context, metadata);
+			ConditionOutcome outcome = getMatchOutcome(context, metadata); /* 条件匹配 */
 			logOutcome(classOrMethodName, outcome);
 			recordEvaluation(context, classOrMethodName, outcome);
-			return outcome.isMatch();
+			return outcome.isMatch();/* 条件匹配结果 */
 		}
 		catch (NoClassDefFoundError ex) {
 			throw new IllegalStateException("Could not evaluate condition on " + classOrMethodName + " due to "

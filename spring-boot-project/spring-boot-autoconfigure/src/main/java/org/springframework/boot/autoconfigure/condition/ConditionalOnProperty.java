@@ -107,7 +107,7 @@ public @interface ConditionalOnProperty {
 	 * separated with dots (e.g. {@code "acme.system.feature"}).
 	 * @return the prefix
 	 */
-	String prefix() default "";
+	String prefix() default "";        /* 配置前缀 */
 
 	/**
 	 * The name of the properties to test. If a prefix has been defined, it is applied to
@@ -119,20 +119,20 @@ public @interface ConditionalOnProperty {
 	 * to separate words (e.g. {@code my-long-property}).
 	 * @return the names
 	 */
-	String[] name() default {};
+	String[] name() default {};        /* 配置key */
 
 	/**
 	 * The string representation of the expected value for the properties. If not
 	 * specified, the property must <strong>not</strong> be equal to {@code false}.
 	 * @return the expected value
 	 */
-	String havingValue() default "";
+	String havingValue() default "";   /* 配置value */
 
 	/**
 	 * Specify if the condition should match if the property is not set. Defaults to
 	 * {@code false}.
 	 * @return if the condition should match if the property is missing
 	 */
-	boolean matchIfMissing() default false;
+	boolean matchIfMissing() default false; /* 配置文件不存在 --> 如何处理 */
 
 }

@@ -405,7 +405,7 @@ public class SpringApplication {
 						.setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
 			}
 		}
-		if (this.lazyInitialization) {//将所有的bean设置为懒加载
+		if (this.lazyInitialization) {
 			context.addBeanFactoryPostProcessor(new LazyInitializationBeanFactoryPostProcessor());
 		}
 		context.addBeanFactoryPostProcessor(new PropertySourceOrderingBeanFactoryPostProcessor(context));

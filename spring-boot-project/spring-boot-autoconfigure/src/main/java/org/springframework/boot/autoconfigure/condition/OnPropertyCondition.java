@@ -44,7 +44,7 @@ import org.springframework.util.StringUtils;
  * @see ConditionalOnProperty
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 40)
-class OnPropertyCondition extends SpringBootCondition {
+class OnPropertyCondition extends SpringBootCondition { /* 条件匹配 - 配置文件 - getMatchOutcome（）  */
 
 	@Override
 	public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
@@ -55,7 +55,7 @@ class OnPropertyCondition extends SpringBootCondition {
 		List<ConditionMessage> noMatch = new ArrayList<>();
 		List<ConditionMessage> match = new ArrayList<>();
 		for (AnnotationAttributes annotationAttributes : allAnnotationAttributes) {
-			ConditionOutcome outcome = determineOutcome(annotationAttributes, context.getEnvironment());
+			ConditionOutcome outcome = determineOutcome(annotationAttributes, context.getEnvironment()); /* 配置匹配 */
 			(outcome.isMatch() ? match : noMatch).add(outcome.getConditionMessage());
 		}
 		if (!noMatch.isEmpty()) {
@@ -68,12 +68,12 @@ class OnPropertyCondition extends SpringBootCondition {
 		Spec spec = new Spec(annotationAttributes);
 		List<String> missingProperties = new ArrayList<>();
 		List<String> nonMatchingProperties = new ArrayList<>();
-		spec.collectProperties(resolver, missingProperties, nonMatchingProperties);
-		if (!missingProperties.isEmpty()) {
+		spec.collectProperties(resolver, missingProperties, nonMatchingProperties); /* 配置匹配 */
+		if (!missingProperties.isEmpty()) { /* 配置不存在 */
 			return ConditionOutcome.noMatch(ConditionMessage.forCondition(ConditionalOnProperty.class, spec)
 					.didNotFind("property", "properties").items(Style.QUOTE, missingProperties));
 		}
-		if (!nonMatchingProperties.isEmpty()) {
+		if (!nonMatchingProperties.isEmpty()) {/* 配置不匹配 */
 			return ConditionOutcome.noMatch(ConditionMessage.forCondition(ConditionalOnProperty.class, spec)
 					.found("different value in property", "different value in properties")
 					.items(Style.QUOTE, nonMatchingProperties));
@@ -116,13 +116,13 @@ class OnPropertyCondition extends SpringBootCondition {
 		private void collectProperties(PropertyResolver resolver, List<String> missing, List<String> nonMatching) {
 			for (String name : this.names) {
 				String key = this.prefix + name;
-				if (resolver.containsProperty(key)) {
-					if (!isMatch(resolver.getProperty(key), this.havingValue)) {
+				if (resolver.containsProperty(key)) {/* 1、配置key存在 */
+					if (!isMatch(resolver.getProperty(key), this.havingValue)) { /* 1.1 配置值不匹配 */
 						nonMatching.add(name);
 					}
 				}
 				else {
-					if (!this.matchIfMissing) {
+					if (!this.matchIfMissing) {     /* 1、配置key不存在 & 不启用 */
 						missing.add(name);
 					}
 				}
