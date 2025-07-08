@@ -58,9 +58,9 @@ public class AopAutoConfiguration {
 		}
 
 		@Configuration(proxyBeanMethods = false)
-		@EnableAspectJAutoProxy(proxyTargetClass = true)
+		@EnableAspectJAutoProxy(proxyTargetClass = true) /* 开启AOP --> 导入 @Import(AspectJAutoProxyRegistrar.class) --> 注入AOP Bean处理器 - AnnotationAwareAspectJAutoProxyCreator */
 		@ConditionalOnProperty(prefix = "spring.aop", name = "proxy-target-class", havingValue = "true",
-				matchIfMissing = true)
+				matchIfMissing = true) /* 默认使用 - Cglib */
 		static class CglibAutoProxyConfiguration {
 
 		}

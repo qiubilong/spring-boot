@@ -87,9 +87,9 @@ public class TransactionAutoConfiguration {
 		}
 
 		@Configuration(proxyBeanMethods = false)
-		@EnableTransactionManagement(proxyTargetClass = true)
+		@EnableTransactionManagement(proxyTargetClass = true) /* 开启事务管理 -> @Import(TransactionManagementConfigurationSelector.class) --> 导入配置 ProxyTransactionManagementConfiguration --> 事务拦截器 TransactionInterceptor  */
 		@ConditionalOnProperty(prefix = "spring.aop", name = "proxy-target-class", havingValue = "true",
-				matchIfMissing = true)
+				matchIfMissing = true) /* 默认使用 - cglib */
 		public static class CglibAutoProxyConfiguration {
 
 		}
