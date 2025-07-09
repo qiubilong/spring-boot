@@ -184,7 +184,7 @@ public class WebMvcAutoConfiguration {
 	// on the classpath
 	@SuppressWarnings("deprecation")
 	@Configuration(proxyBeanMethods = false)
-	@Import(EnableWebMvcConfiguration.class)
+	@Import(EnableWebMvcConfiguration.class) /* 导入WebMvc配置类 */
 	@EnableConfigurationProperties({ WebMvcProperties.class, WebProperties.class })
 	@Order(0)
 	public static class WebMvcAutoConfigurationAdapter implements WebMvcConfigurer, ServletContextAware {
@@ -437,7 +437,7 @@ public class WebMvcAutoConfiguration {
 
 		@Bean
 		@Primary
-		@Override
+		@Override     /* Handler 解析匹配 */
 		public RequestMappingHandlerMapping requestMappingHandlerMapping(
 				@Qualifier("mvcContentNegotiationManager") ContentNegotiationManager contentNegotiationManager,
 				@Qualifier("mvcConversionService") FormattingConversionService conversionService,
