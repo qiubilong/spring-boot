@@ -54,7 +54,7 @@ class ConfigDataLocationResolvers {
 	ConfigDataLocationResolvers(DeferredLogFactory logFactory, ConfigurableBootstrapContext bootstrapContext,
 			Binder binder, ResourceLoader resourceLoader) {
 		this(logFactory, bootstrapContext, binder, resourceLoader, SpringFactoriesLoader
-				.loadFactoryNames(ConfigDataLocationResolver.class, resourceLoader.getClassLoader()));
+				.loadFactoryNames(ConfigDataLocationResolver.class, resourceLoader.getClassLoader())); /* 配置文件解析器 -- spring.factories/ConfigDataLocationResolver */
 	}
 
 	/**

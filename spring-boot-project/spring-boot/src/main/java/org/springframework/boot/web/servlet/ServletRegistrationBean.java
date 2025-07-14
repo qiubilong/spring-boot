@@ -52,7 +52,7 @@ public class ServletRegistrationBean<T extends Servlet> extends DynamicRegistrat
 
 	private static final String[] DEFAULT_MAPPINGS = { "/*" };
 
-	private T servlet;
+	private T servlet; /* DispatcherServlet */
 
 	private Set<String> urlMappings = new LinkedHashSet<>();
 
@@ -175,7 +175,7 @@ public class ServletRegistrationBean<T extends Servlet> extends DynamicRegistrat
 	@Override
 	protected ServletRegistration.Dynamic addRegistration(String description, ServletContext servletContext) {
 		String name = getServletName();
-		return servletContext.addServlet(name, this.servlet);
+		return servletContext.addServlet(name, this.servlet); /* 添加 DispatcherServlet 对象 */
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class ServletRegistrationBean<T extends Servlet> extends DynamicRegistrat
 			urlMapping = DEFAULT_MAPPINGS;
 		}
 		if (!ObjectUtils.isEmpty(urlMapping)) {
-			registration.addMapping(urlMapping);
+			registration.addMapping(urlMapping); /* DispatcherServlet 匹配路径 */
 		}
 		registration.setLoadOnStartup(this.loadOnStartup);
 		if (this.multipartConfig != null) {

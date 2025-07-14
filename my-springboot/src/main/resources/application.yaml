@@ -1,2 +1,15 @@
 server:
   port: 8080
+
+
+spring:
+  application:
+    name: my-springboot
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      config:
+        file-extension: yaml
+  config:
+    import:
+      - optional:nacos:${spring.application.name}.yaml

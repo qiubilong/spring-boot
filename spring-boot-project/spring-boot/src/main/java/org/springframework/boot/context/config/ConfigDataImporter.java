@@ -41,7 +41,7 @@ class ConfigDataImporter {
 
 	private final Log logger;
 
-	private final ConfigDataLocationResolvers resolvers;
+	private final ConfigDataLocationResolvers resolvers; /* nacos配置解析器：NacosConfigDataLocationResolver 、 本地配置解析器：StandardConfigDataLocationResolver */
 
 	private final ConfigDataLoaders loaders;
 
@@ -83,7 +83,7 @@ class ConfigDataImporter {
 		try {
 			Profiles profiles = (activationContext != null) ? activationContext.getProfiles() : null;
 			List<ConfigDataResolutionResult> resolved = resolve(locationResolverContext, profiles, locations);/* 解析配置文件路径，如 file:./application.yaml */
-			return load(loaderContext, resolved);/* ## 加载application.properties等配置*/
+			return load(loaderContext, resolved);/* ## nacos or 本地 -->  加载application.properties等配置*/
 		}
 		catch (IOException ex) {
 			throw new IllegalStateException("IO error on loading imports from " + locations, ex);
@@ -102,7 +102,7 @@ class ConfigDataImporter {
 	private List<ConfigDataResolutionResult> resolve(ConfigDataLocationResolverContext locationResolverContext,
 			Profiles profiles, ConfigDataLocation location) {
 		try {
-			return this.resolvers.resolve(locationResolverContext, location, profiles);/* 解析配置文件路径*/
+			return this.resolvers.resolve(locationResolverContext, location, profiles);/* 解析配置文件路径 --> nacos or 本地 */
 		}
 		catch (ConfigDataNotFoundException ex) {
 			handle(ex, location, null);
@@ -125,7 +125,7 @@ class ConfigDataImporter {
 			}
 			else {
 				try {
-					ConfigData loaded = this.loaders.load(loaderContext, resource);/* ## 加载application.properties等配置*/
+					ConfigData loaded = this.loaders.load(loaderContext, resource);/* ## nacos配置加载器:NacosConfigDataLoader ; 本地配置加载器:StandardConfigDataLoader     --> 加载application.properties等配置*/
 					if (loaded != null) {
 						this.loaded.add(resource);
 						this.loadedLocations.add(location);

@@ -145,12 +145,12 @@ class ConfigDataEnvironment {
 				.orElse(ConfigDataNotFoundAction.FAIL);
 		this.bootstrapContext = bootstrapContext;
 		this.environment = environment;
-		this.resolvers = createConfigDataLocationResolvers(logFactory, bootstrapContext, binder, resourceLoader);/* StandardConfigDataLocationResolver -->application.properties解析器*/
+		this.resolvers = createConfigDataLocationResolvers(logFactory, bootstrapContext, binder, resourceLoader);/* NacosConfigDataLoader、StandardConfigDataLocationResolver -->application.properties解析器*/
 		this.additionalProfiles = additionalProfiles;
 		this.environmentUpdateListener = (environmentUpdateListener != null) ? environmentUpdateListener
 				: ConfigDataEnvironmentUpdateListener.NONE;
 		this.loaders = new ConfigDataLoaders(logFactory, bootstrapContext, resourceLoader.getClassLoader());
-		this.contributors = createContributors(binder);/* ## 配置文件搜索路径 - 默认 file:./;   optional:file:./config/;   optional:file:./config/xxx/ ;   optional:classpath:/;   optional:classpath:/config/ */
+		this.contributors = createContributors(binder);/* ## 配置文件搜索路径 - 默认 先file:./;   optional:file:./config/;   optional:file:./config/xxx/ ;   后optional:classpath:/;   optional:classpath:/config/ */
 	}
 
 	protected ConfigDataLocationResolvers createConfigDataLocationResolvers(DeferredLogFactory logFactory,
@@ -172,8 +172,8 @@ class ConfigDataEnvironment {
 						propertySource.getName()));
 				contributors.add(ConfigDataEnvironmentContributor.ofExisting(propertySource));
 			}
-		}   /* ## 配置文件搜索路径 --spring.config.import、spring.config.additional-location、spring.config.location */
-		contributors.addAll(getInitialImportContributors(binder));/* 上面为空，默认optional:classpath:/;optional:classpath:/config/  --> optional:file:./;optional:file:./config/;optional:file:./config/ */
+		}   /* ## 配置文件搜索路径 --spring.config.import、spring.config.location */
+		contributors.addAll(getInitialImportContributors(binder));/* 上面为空，默认 先optional:file:./;optional:file:./config/;optional:file:./config/， 再optional:classpath:/;optional:classpath:/config/ */
 		if (defaultPropertySource != null) {
 			this.logger.trace("Creating wrapped config data contributor for default property source");
 			contributors.add(ConfigDataEnvironmentContributor.ofExisting(defaultPropertySource));
@@ -190,7 +190,7 @@ class ConfigDataEnvironment {
 		return this.contributors;
 	}
 
-	private List<ConfigDataEnvironmentContributor> getInitialImportContributors(Binder binder) {//spring.config.import=classpath:/additional.properties
+	private List<ConfigDataEnvironmentContributor> getInitialImportContributors(Binder binder) {/* 导入nacos配置 spring.config.import=optional:nacos:${spring.application.name}.yaml */
 		List<ConfigDataEnvironmentContributor> initialContributors = new ArrayList<>();//spring.config.import=https://example.com/config/server.properties
 		addInitialImportContributors(initialContributors, bindLocations(binder, IMPORT_PROPERTY, EMPTY_LOCATIONS)); //spring.config.import=configserver:http://config-server.example.com
 		addInitialImportContributors(initialContributors,
@@ -224,13 +224,13 @@ class ConfigDataEnvironment {
 		ConfigDataImporter importer = new ConfigDataImporter(this.logFactory, this.notFoundAction, this.resolvers,
 				this.loaders);
 		registerBootstrapBinder(this.contributors, null, DENY_INACTIVE_BINDING);
-		ConfigDataEnvironmentContributors contributors = processInitial(this.contributors, importer); /* 1、## 加载程序员配置文件application.properties等 */
+		ConfigDataEnvironmentContributors contributors = processInitial(this.contributors, importer); /* 1、## 加载程序员配置 本地文件application.properties等 */
 		ConfigDataActivationContext activationContext = createActivationContext(
 				contributors.getBinder(null, BinderOption.FAIL_ON_BIND_TO_INACTIVE_SOURCE));
-		contributors = processWithoutProfiles(contributors, importer, activationContext);//加载application.properties包含文件
+		contributors = processWithoutProfiles(contributors, importer, activationContext); /* 2、## 加载application.properties包含文件 - spring.config.import --> nacos配置 */
 		activationContext = withProfiles(contributors, activationContext);
-		contributors = processWithProfiles(contributors, importer, activationContext); /* 2、## 加载激活环境文件 */
-		applyToEnvironment(contributors, activationContext, importer.getLoadedLocations(),/* 添加application.properties配置源到Environment && 设置激活环境 activeProfiles */
+		contributors = processWithProfiles(contributors, importer, activationContext);    /* 3、## 加载激活环境文件 */
+		applyToEnvironment(contributors, activationContext, importer.getLoadedLocations(),/* 4、## 添加application.properties配置源到Environment && 设置激活环境 activeProfiles */
 				importer.getOptionalLocations());
 	}
 

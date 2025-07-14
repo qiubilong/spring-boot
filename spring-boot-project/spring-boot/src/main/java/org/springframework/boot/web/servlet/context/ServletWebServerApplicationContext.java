@@ -93,7 +93,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * @see AnnotationConfigServletWebServerApplicationContext
  * @see XmlServletWebServerApplicationContext
  * @see ServletWebServerFactory
- */
+ */         /*  Web Spring容器   */
 public class ServletWebServerApplicationContext extends GenericWebApplicationContext
 		implements ConfigurableWebServerApplicationContext {
 
@@ -142,7 +142,7 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 	@Override
 	public final void refresh() throws BeansException, IllegalStateException {
 		try {
-			super.refresh();
+			super.refresh(); /* 启动Spring容器 */
 		}
 		catch (RuntimeException ex) {
 			WebServer webServer = this.webServer;
@@ -154,10 +154,10 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 	}
 
 	@Override
-	protected void onRefresh() {
+	protected void onRefresh() {/* 启动Spring容器中，Bean实例化后 */
 		super.onRefresh();
 		try {
-			createWebServer();/* 启动Tomcat */
+			createWebServer();/* 创建Tomcat */
 		}
 		catch (Throwable ex) {
 			throw new ApplicationContextException("Unable to start web server", ex);
@@ -172,14 +172,14 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 		super.doClose();/* 关闭spring容器 */
 	}
 
-	private void createWebServer() {/* 启动Tomcat */
+	private void createWebServer() {/* 创建Tomcat */
 		WebServer webServer = this.webServer;
 		ServletContext servletContext = getServletContext();
 		if (webServer == null && servletContext == null) {
 			StartupStep createWebServer = this.getApplicationStartup().start("spring.boot.webserver.create");
 			ServletWebServerFactory factory = getWebServerFactory(); /* Tomcat Web工厂 */
 			createWebServer.tag("factory", factory.getClass().toString());
-			this.webServer = factory.getWebServer(getSelfInitializer());/* 创建Tomcat --> Spring容器中获取 ServletContextInitializer对象列表 --> 可以注入过滤器servletFilter等   */
+			this.webServer = factory.getWebServer(getSelfInitializer());/* 创建Tomcat --> Spring容器中获取 ServletContextInitializer对象列表 --> 注入DispatcherServlet,Filter等   */
 			createWebServer.end();
 			getBeanFactory().registerSingleton("webServerGracefulShutdown",
 					new WebServerGracefulShutdownLifecycle(this.webServer));
@@ -223,7 +223,7 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 	 * @return the self initializer
 	 * @see #prepareWebApplicationContext(ServletContext)
 	 */
-	private org.springframework.boot.web.servlet.ServletContextInitializer getSelfInitializer() {
+	private org.springframework.boot.web.servlet.ServletContextInitializer getSelfInitializer() { /* 构建一个ServletContextInitializer --> 执行当前对象 selfInitialize() */
 		return this::selfInitialize;
 	}
 
@@ -232,7 +232,7 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 		registerApplicationScope(servletContext);
 		WebApplicationContextUtils.registerEnvironmentBeans(getBeanFactory(), servletContext);
 		for (ServletContextInitializer beans : getServletContextInitializerBeans()) {
-			beans.onStartup(servletContext);
+			beans.onStartup(servletContext); /* 1、注册 DispatcherServlet; 2、注册 CharacterEncodingFilter   */
 		}
 	}
 

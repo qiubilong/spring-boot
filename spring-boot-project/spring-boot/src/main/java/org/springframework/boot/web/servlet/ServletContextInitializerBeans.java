@@ -70,14 +70,14 @@ public class ServletContextInitializerBeans extends AbstractCollection<ServletCo
 	 */
 	private final Set<Object> seen = new HashSet<>();
 
-	private final MultiValueMap<Class<?>, ServletContextInitializer> initializers;
+	private final MultiValueMap<Class<?>, ServletContextInitializer> initializers; /* 找出spring容器中所有的 ServletContextInitializer - dispatcherServlet注册器、编码Filter */
 
 	private final List<Class<? extends ServletContextInitializer>> initializerTypes;
 
 	private List<ServletContextInitializer> sortedList;
 
 	@SafeVarargs
-	@SuppressWarnings("varargs")
+	@SuppressWarnings("varargs")   /* 获取spring容器中所有的 ServletContextInitializer  */
 	public ServletContextInitializerBeans(ListableBeanFactory beanFactory,
 			Class<? extends ServletContextInitializer>... initializerTypes) {
 		this.initializers = new LinkedMultiValueMap<>();

@@ -80,14 +80,14 @@ public class DispatcherServletAutoConfiguration {
 	public static final String DEFAULT_DISPATCHER_SERVLET_REGISTRATION_BEAN_NAME = "dispatcherServletRegistration";
 
 	@Configuration(proxyBeanMethods = false)
-	@Conditional(DefaultDispatcherServletCondition.class)
+	@Conditional(DefaultDispatcherServletCondition.class)/* 条件匹配 - DispatcherServlet 对象不存在 */
 	@ConditionalOnClass(ServletRegistration.class)
 	@EnableConfigurationProperties(WebMvcProperties.class)
 	protected static class DispatcherServletConfiguration {
 
 		@Bean(name = DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)
 		public DispatcherServlet dispatcherServlet(WebMvcProperties webMvcProperties) {
-			DispatcherServlet dispatcherServlet = new DispatcherServlet();
+			DispatcherServlet dispatcherServlet = new DispatcherServlet(); /* 不存在时 --> 创建 DispatcherServlet 对象 */
 			dispatcherServlet.setDispatchOptionsRequest(webMvcProperties.isDispatchOptionsRequest());
 			dispatcherServlet.setDispatchTraceRequest(webMvcProperties.isDispatchTraceRequest());
 			dispatcherServlet.setThrowExceptionIfNoHandlerFound(webMvcProperties.isThrowExceptionIfNoHandlerFound());
@@ -107,12 +107,12 @@ public class DispatcherServletAutoConfiguration {
 	}
 
 	@Configuration(proxyBeanMethods = false)
-	@Conditional(DispatcherServletRegistrationCondition.class)
+	@Conditional(DispatcherServletRegistrationCondition.class)/* 条件匹配 -  ServletRegistrationBean 对象不存在 */
 	@ConditionalOnClass(ServletRegistration.class)
 	@EnableConfigurationProperties(WebMvcProperties.class)
 	@Import(DispatcherServletConfiguration.class)
 	protected static class DispatcherServletRegistrationConfiguration {
-
+		/* DispatcherServletRegistrationBean --> 父类 ServletContextInitializer --> Tomcat  onStartup() --> 注入 DispatcherServlet    */
 		@Bean(name = DEFAULT_DISPATCHER_SERVLET_REGISTRATION_BEAN_NAME)
 		@ConditionalOnBean(value = DispatcherServlet.class, name = DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)
 		public DispatcherServletRegistrationBean dispatcherServletRegistration(DispatcherServlet dispatcherServlet,
@@ -127,7 +127,7 @@ public class DispatcherServletAutoConfiguration {
 
 	}
 
-	@Order(Ordered.LOWEST_PRECEDENCE - 10)
+	@Order(Ordered.LOWEST_PRECEDENCE - 10) /* 条件匹配 - DispatcherServlet 对象不存在 */
 	private static class DefaultDispatcherServletCondition extends SpringBootCondition {
 
 		@Override
@@ -144,7 +144,7 @@ public class DispatcherServletAutoConfiguration {
 				return ConditionOutcome.noMatch(
 						message.found("non dispatcher servlet bean").items(DEFAULT_DISPATCHER_SERVLET_BEAN_NAME));
 			}
-			if (dispatchServletBeans.isEmpty()) {
+			if (dispatchServletBeans.isEmpty()) { /* 条件匹配 - DispatcherServlet 对象不存在 */
 				return ConditionOutcome.match(message.didNotFind("dispatcher servlet beans").atAll());
 			}
 			return ConditionOutcome.match(message.found("dispatcher servlet bean", "dispatcher servlet beans")
@@ -154,7 +154,7 @@ public class DispatcherServletAutoConfiguration {
 
 	}
 
-	@Order(Ordered.LOWEST_PRECEDENCE - 10)
+	@Order(Ordered.LOWEST_PRECEDENCE - 10) /* 条件匹配 -  ServletRegistrationBean 对象不存在 */
 	private static class DispatcherServletRegistrationCondition extends SpringBootCondition {
 
 		@Override
@@ -170,7 +170,7 @@ public class DispatcherServletAutoConfiguration {
 		private ConditionOutcome checkDefaultDispatcherName(ConfigurableListableBeanFactory beanFactory) {
 			boolean containsDispatcherBean = beanFactory.containsBean(DEFAULT_DISPATCHER_SERVLET_BEAN_NAME);
 			if (!containsDispatcherBean) {
-				return ConditionOutcome.match();
+				return ConditionOutcome.match(); /* dispatcherServlet对象不存在 */
 			}
 			List<String> servlets = Arrays
 					.asList(beanFactory.getBeanNamesForType(DispatcherServlet.class, false, false));
@@ -187,7 +187,7 @@ public class DispatcherServletAutoConfiguration {
 					.asList(beanFactory.getBeanNamesForType(ServletRegistrationBean.class, false, false));
 			boolean containsDispatcherRegistrationBean = beanFactory
 					.containsBean(DEFAULT_DISPATCHER_SERVLET_REGISTRATION_BEAN_NAME);
-			if (registrations.isEmpty()) {
+			if (registrations.isEmpty()) {/* 条件匹配 -  ServletRegistrationBean 对象不存在 */
 				if (containsDispatcherRegistrationBean) {
 					return ConditionOutcome.noMatch(message.found("non servlet registration bean")
 							.items(DEFAULT_DISPATCHER_SERVLET_REGISTRATION_BEAN_NAME));

@@ -105,7 +105,7 @@ public abstract class DynamicRegistrationBean<D extends Registration.Dynamic> ex
 
 	@Override
 	protected final void register(String description, ServletContext servletContext) {
-		D registration = addRegistration(description, servletContext);
+		D registration = addRegistration(description, servletContext); /* ServletRegistrationBean --> 添加DispatcherServlet;  FilterRegistrationBean -->添加Filter  */
 		if (registration == null) {
 			logger.info(StringUtils.capitalize(description) + " was not registered (possibly already registered?)");
 			return;

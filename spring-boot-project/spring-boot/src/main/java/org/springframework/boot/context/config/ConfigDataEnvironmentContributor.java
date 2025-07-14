@@ -238,7 +238,7 @@ class ConfigDataEnvironmentContributor implements Iterable<ConfigDataEnvironment
 				contributors, activationContext, this, true);
 		Binder binder = new Binder(sources, placeholdersResolver, null, null, null);
 		UseLegacyConfigProcessingException.throwIfRequested(binder);
-		ConfigDataProperties properties = ConfigDataProperties.get(binder);
+		ConfigDataProperties properties = ConfigDataProperties.get(binder); /* 获取导入文件 - spring.config.import = optional:nacos:my-springboot.yaml */
 		if (properties != null && this.configDataOptions.contains(ConfigData.Option.IGNORE_IMPORTS)) {
 			properties = properties.withoutImports();
 		}

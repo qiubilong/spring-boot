@@ -38,7 +38,7 @@ class TomcatStarter implements ServletContainerInitializer {
 
 	private static final Log logger = LogFactory.getLog(TomcatStarter.class);
 
-	private final ServletContextInitializer[] initializers;
+	private final ServletContextInitializer[] initializers; /* Spring容器中的 ServletContextInitializer */
 
 	private volatile Exception startUpException;
 
@@ -46,7 +46,7 @@ class TomcatStarter implements ServletContainerInitializer {
 		this.initializers = initializers;
 	}
 
-	@Override
+	@Override  /* Tomcat 启动回调 */
 	public void onStartup(Set<Class<?>> classes, ServletContext servletContext) throws ServletException {
 		try {
 			for (ServletContextInitializer initializer : this.initializers) {

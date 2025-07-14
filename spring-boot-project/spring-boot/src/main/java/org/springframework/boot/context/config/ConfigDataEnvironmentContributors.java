@@ -111,9 +111,9 @@ class ConfigDataEnvironmentContributors implements Iterable<ConfigDataEnvironmen
 			ConfigDataLocationResolverContext locationResolverContext = new ContributorConfigDataLocationResolverContext(
 					result, contributor, activationContext);
 			ConfigDataLoaderContext loaderContext = new ContributorDataLoaderContext(this);
-			List<ConfigDataLocation> imports = contributor.getImports();//配置路径 - ooptional:classpath:/;optional:classpath:/config/
+			List<ConfigDataLocation> imports = contributor.getImports();/* 配置路径 -  optional:nacos:my-springboot.yaml 或 optional:classpath:/;optional:classpath:/config/   */
 			this.logger.trace(LogMessage.format("Processing imports %s", imports));
-			Map<ConfigDataResolutionResult, ConfigData> imported = importer.resolveAndLoad(activationContext, /* ## 加载程序员配置文件application.properties等 */
+			Map<ConfigDataResolutionResult, ConfigData> imported = importer.resolveAndLoad(activationContext, /* ## nacos or 本地配置  --> 加载程序员配置文件application.properties等 */
 					locationResolverContext, loaderContext, imports);
 			this.logger.trace(LogMessage.of(() -> getImportedMessage(imported.keySet())));
 			ConfigDataEnvironmentContributor contributorAndChildren = contributor.withChildren(importPhase,

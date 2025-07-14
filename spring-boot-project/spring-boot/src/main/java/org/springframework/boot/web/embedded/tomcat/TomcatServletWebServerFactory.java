@@ -207,7 +207,7 @@ public class TomcatServletWebServerFactory extends AbstractServletWebServerFacto
 		for (Connector additionalConnector : this.additionalTomcatConnectors) {
 			tomcat.getService().addConnector(additionalConnector);
 		}
-		prepareContext(tomcat.getHost(), initializers); /* 注册 ServletFilter */
+		prepareContext(tomcat.getHost(), initializers); /* 注册ServletContextInitializer列表 --> 注入DispatcherServlet、Filter */
 		return getTomcatWebServer(tomcat); /* 创建Tomcat */
 	}
 
@@ -376,7 +376,7 @@ public class TomcatServletWebServerFactory extends AbstractServletWebServerFacto
 			embeddedContext.setStarter(starter);
 			embeddedContext.setFailCtxIfServletStartFails(true);
 		}
-		context.addServletContainerInitializer(starter, NO_CLASSES);
+		context.addServletContainerInitializer(starter, NO_CLASSES);/* TomcatStarter也是ServletContextInitializer -> 聚合 Spring容器中的 ServletContextInitializer */
 		for (LifecycleListener lifecycleListener : this.contextLifecycleListeners) {
 			context.addLifecycleListener(lifecycleListener);
 		}

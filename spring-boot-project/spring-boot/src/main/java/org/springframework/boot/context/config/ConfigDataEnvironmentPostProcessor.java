@@ -91,7 +91,7 @@ public class ConfigDataEnvironmentPostProcessor implements EnvironmentPostProces
 
 	@Override
 	public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-		postProcessEnvironment(environment, application.getResourceLoader(), application.getAdditionalProfiles());/* 加载配置文件 application.properties */
+		postProcessEnvironment(environment, application.getResourceLoader(), application.getAdditionalProfiles());/* 加载 nacos or 本地配置文件 application.properties */
 	}
 
 	void postProcessEnvironment(ConfigurableEnvironment environment, ResourceLoader resourceLoader,

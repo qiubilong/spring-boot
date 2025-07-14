@@ -15,7 +15,6 @@ public class AppMain {
 		ConfigurableApplicationContext context = SpringApplication.run(AppMain.class, args);
 
 
-		context.close();
 		Thread.currentThread().join();
 	}
 }
