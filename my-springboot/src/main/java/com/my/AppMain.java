@@ -13,7 +13,7 @@ public class AppMain {
 
 	public static void main(String[] args) throws Exception{
 		ConfigurableApplicationContext context = SpringApplication.run(AppMain.class, args);
-
+		System.out.println(context.getEnvironment().getProperty("xxx"));
 
 		Thread.currentThread().join();
 	}

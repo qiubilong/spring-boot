@@ -83,7 +83,7 @@ public class EventPublishingRunListener implements SpringApplicationRunListener,
 	public void environmentPrepared(ConfigurableBootstrapContext bootstrapContext,
 			ConfigurableEnvironment environment) {
 		this.initialMulticaster.multicastEvent(
-				new ApplicationEnvironmentPreparedEvent(bootstrapContext, this.application, this.args, environment));
+				new ApplicationEnvironmentPreparedEvent(bootstrapContext, this.application, this.args, environment)); /* EnvironmentPostProcessorApplicationListener - 加载 nacos、本地文件配置 */
 	}
 
 	@Override

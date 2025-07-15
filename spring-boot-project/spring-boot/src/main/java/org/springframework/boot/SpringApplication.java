@@ -298,13 +298,13 @@ public class SpringApplication {
 		listeners.starting(bootstrapContext, this.mainApplicationClass);
 		try {
 			ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);//解析命令行参数解析
-			ConfigurableEnvironment environment = prepareEnvironment(listeners, bootstrapContext, applicationArguments);/* ## 创建配置环境 - ApplicationServletEnvironment -->加载application.properties等配置文件   */
+			ConfigurableEnvironment environment = prepareEnvironment(listeners, bootstrapContext, applicationArguments);/* ## 1、创建配置环境 - ApplicationServletEnvironment -->加载application.properties等配置文件   */
 			configureIgnoreBeanInfo(environment);
 			Banner printedBanner = printBanner(environment);
-			context = createApplicationContext(); /* ## 创建spring容器 - AnnotationConfigServletWebServerApplicationContext */
+			context = createApplicationContext(); /* ## 2、创建spring容器 - AnnotationConfigServletWebServerApplicationContext */
 			context.setApplicationStartup(this.applicationStartup);
 			prepareContext(bootstrapContext, context, environment, listeners, applicationArguments, printedBanner);/* ##  准备spring容器环境 */
-			refreshContext(context);/* ## 启动spring容器，扫描实例化Bean */
+			refreshContext(context);/* ## 3、启动spring容器，扫描实例化Bean */
 			afterRefresh(context, applicationArguments);
 			Duration timeTakenToStartup = Duration.ofNanos(System.nanoTime() - startTime);
 			if (this.logStartupInfo) {
@@ -340,7 +340,7 @@ public class SpringApplication {
 		ConfigurableEnvironment environment = getOrCreateEnvironment();/* 创建运行配置对象 -->  webType -> ApplicationServletEnvironment */
 		configureEnvironment(environment, applicationArguments.getSourceArgs());
 		ConfigurationPropertySources.attach(environment);
-		listeners.environmentPrepared(bootstrapContext, environment);/* 事件 --> EnvironmentPostProcessorApplicationListener -->加载application.properties等配置文件 */
+		listeners.environmentPrepared(bootstrapContext, environment);/* 事件 --> EnvironmentPostProcessorApplicationListener -->加载 nacos or 本地 配置文件application.properties等 */
 		DefaultPropertiesPropertySource.moveToEnd(environment);
 		Assert.state(!environment.containsProperty("spring.main.environment-prefix"),
 				"Environment prefix cannot be set via properties.");
@@ -493,7 +493,7 @@ public class SpringApplication {
 		if (this.addConversionService) {
 			environment.setConversionService(new ApplicationConversionService());
 		}
-		configurePropertySources(environment, args);//添加代码指定配置 & 命令行配置
+		configurePropertySources(environment, args); /* 命令行配置 --server.port=8083 */
 		configureProfiles(environment, args);
 	}
 
@@ -520,7 +520,7 @@ public class SpringApplication {
 				sources.replace(name, composite);
 			}
 			else {
-				sources.addFirst(new SimpleCommandLinePropertySource(args));//配置解析，程序命令行 - k1=v1 k2=v2
+				sources.addFirst(new SimpleCommandLinePropertySource(args));/* 命令行配置 --server.port=8083 */
 			}
 		}
 	}

@@ -104,7 +104,7 @@ class ConfigDataLocationResolvers {
 		}
 		for (ConfigDataLocationResolver<?> resolver : getResolvers()) {
 			if (resolver.isResolvable(context, location)) {
-				return resolve(resolver, context, location, profiles);/* ## 解析配置文件路径*/
+				return resolve(resolver, context, location, profiles);/* ## 解析配置文件路径 nacos or 本地*/
 			}
 		}
 		throw new UnsupportedConfigDataLocationException(location);
@@ -117,7 +117,7 @@ class ConfigDataLocationResolvers {
 			return resolved;
 		}
 		List<ConfigDataResolutionResult> profileSpecific = resolve(location, true,
-				() -> resolver.resolveProfileSpecific(context, location, profiles));
+				() -> resolver.resolveProfileSpecific(context, location, profiles));//nacos解析 - NacosConfigDataLocationResolver
 		return merge(resolved, profileSpecific);
 	}
 

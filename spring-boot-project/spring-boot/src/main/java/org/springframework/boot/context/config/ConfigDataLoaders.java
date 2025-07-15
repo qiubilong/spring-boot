@@ -102,7 +102,7 @@ class ConfigDataLoaders {
 	 * @throws IOException on IO error
 	 */
 	<R extends ConfigDataResource> ConfigData load(ConfigDataLoaderContext context, R resource) throws IOException {
-		ConfigDataLoader<R> loader = getLoader(context, resource);
+		ConfigDataLoader<R> loader = getLoader(context, resource);/* 寻找匹配的配置加载器 */
 		this.logger.trace(LogMessage.of(() -> "Loading " + resource + " using loader " + loader.getClass().getName()));
 		return loader.load(context, resource);
 	}
@@ -112,9 +112,9 @@ class ConfigDataLoaders {
 		ConfigDataLoader<R> result = null;
 		for (int i = 0; i < this.loaders.size(); i++) {
 			ConfigDataLoader<?> candidate = this.loaders.get(i);
-			if (this.resourceTypes.get(i).isInstance(resource)) {
+			if (this.resourceTypes.get(i).isInstance(resource)) { /* 泛型匹配 */
 				ConfigDataLoader<R> loader = (ConfigDataLoader<R>) candidate;
-				if (loader.isLoadable(context, resource)) {
+				if (loader.isLoadable(context, resource)) {//默认true
 					if (result != null) {
 						throw new IllegalStateException("Multiple loaders found for resource '" + resource + "' ["
 								+ candidate.getClass().getName() + "," + result.getClass().getName() + "]");

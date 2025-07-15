@@ -82,8 +82,8 @@ class ConfigDataImporter {
 			List<ConfigDataLocation> locations) {
 		try {
 			Profiles profiles = (activationContext != null) ? activationContext.getProfiles() : null;
-			List<ConfigDataResolutionResult> resolved = resolve(locationResolverContext, profiles, locations);/* 解析配置文件路径，如 file:./application.yaml */
-			return load(loaderContext, resolved);/* ## nacos or 本地 -->  加载application.properties等配置*/
+			List<ConfigDataResolutionResult> resolved = resolve(locationResolverContext, profiles, locations);/* 1、解析配置文件资源，如 file:./application.yaml */
+			return load(loaderContext, resolved);/* ## 2、nacos or 本地 -->  加载application.properties等配置*/
 		}
 		catch (IOException ex) {
 			throw new IllegalStateException("IO error on loading imports from " + locations, ex);

@@ -35,7 +35,7 @@ public class DefaultApplicationArguments implements ApplicationArguments {
 
 	private final Source source;
 
-	private final String[] args;
+	private final String[] args; /* 命令行 --server.port=8083 */
 
 	public DefaultApplicationArguments(String... args) {
 		Assert.notNull(args, "Args must not be null");

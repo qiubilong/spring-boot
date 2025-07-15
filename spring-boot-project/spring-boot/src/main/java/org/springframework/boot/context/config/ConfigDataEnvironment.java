@@ -220,7 +220,7 @@ class ConfigDataEnvironment {
 	 * Process all contributions and apply any newly imported property sources to the
 	 * {@link Environment}.
 	 */
-	void processAndApply() { /* ##配置文件application.properties等 */
+	void processAndApply() { /* ## 加载配置文件 */
 		ConfigDataImporter importer = new ConfigDataImporter(this.logFactory, this.notFoundAction, this.resolvers,
 				this.loaders);
 		registerBootstrapBinder(this.contributors, null, DENY_INACTIVE_BINDING);
@@ -230,7 +230,7 @@ class ConfigDataEnvironment {
 		contributors = processWithoutProfiles(contributors, importer, activationContext); /* 2、## 加载application.properties包含文件 - spring.config.import --> nacos配置 */
 		activationContext = withProfiles(contributors, activationContext);
 		contributors = processWithProfiles(contributors, importer, activationContext);    /* 3、## 加载激活环境文件 */
-		applyToEnvironment(contributors, activationContext, importer.getLoadedLocations(),/* 4、## 添加application.properties配置源到Environment && 设置激活环境 activeProfiles */
+		applyToEnvironment(contributors, activationContext, importer.getLoadedLocations(),/* 4、## 添加配置源到 Environment && 设置激活环境 activeProfiles */
 				importer.getOptionalLocations());
 	}
 
