@@ -23,6 +23,7 @@ org.springframework.boot.autoconfigure.condition.OnWebApplicationCondition
 
 # Auto Configure
 # AopAutoConfiguration                    -- AOP 动态代理
+# TransactionAutoConfiguration            -- 事务动态代理
 # DispatcherServletAutoConfiguration      -- DispatcherServlet 配置
 # WebMvcAutoConfiguration                 -- WebMvc 配置
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\

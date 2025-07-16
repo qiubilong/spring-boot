@@ -154,7 +154,7 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 	}
 
 	@Override
-	protected void onRefresh() {/* 启动Spring容器中，Bean实例化后 */
+	protected void onRefresh() {/* 启动Spring容器中，Bean扫描后，实例化前 */
 		super.onRefresh();
 		try {
 			createWebServer();/* 创建Tomcat */
@@ -184,7 +184,7 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 			getBeanFactory().registerSingleton("webServerGracefulShutdown",
 					new WebServerGracefulShutdownLifecycle(this.webServer));
 			getBeanFactory().registerSingleton("webServerStartStop",
-					new WebServerStartStopLifecycle(this, this.webServer)); /* 监听spring的声明周期 -> 启动/关闭Tomcat */
+					new WebServerStartStopLifecycle(this, this.webServer)); /* 监听spring的生命周期 -> 启动/关闭Tomcat */
 		}
 		else if (servletContext != null) {
 			try {
@@ -278,7 +278,7 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 			return;
 		}
 		servletContext.log("Initializing Spring embedded WebApplicationContext");
-		try {
+		try {                           /* 设置Spring容器 到 ServletContext，DispatcherServlet初始化时读取  */
 			servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, this);
 			if (logger.isDebugEnabled()) {
 				logger.debug("Published root WebApplicationContext as ServletContext attribute with name ["

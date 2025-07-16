@@ -83,8 +83,8 @@ public class ServletContextInitializerBeans extends AbstractCollection<ServletCo
 		this.initializers = new LinkedMultiValueMap<>();
 		this.initializerTypes = (initializerTypes.length != 0) ? Arrays.asList(initializerTypes)
 				: Collections.singletonList(ServletContextInitializer.class);
-		addServletContextInitializerBeans(beanFactory);
-		addAdaptableBeans(beanFactory);
+		addServletContextInitializerBeans(beanFactory); /* 寻找 ServletContextInitializer  */
+		addAdaptableBeans(beanFactory);  /* 包装 Filter --> ServletContextInitializer */
 		List<ServletContextInitializer> sortedInitializers = this.initializers.values().stream()
 				.flatMap((value) -> value.stream().sorted(AnnotationAwareOrderComparator.INSTANCE))
 				.collect(Collectors.toList());
@@ -152,7 +152,7 @@ public class ServletContextInitializerBeans extends AbstractCollection<ServletCo
 	protected void addAdaptableBeans(ListableBeanFactory beanFactory) {
 		MultipartConfigElement multipartConfig = getMultipartConfig(beanFactory);
 		addAsRegistrationBean(beanFactory, Servlet.class, new ServletRegistrationBeanAdapter(multipartConfig));
-		addAsRegistrationBean(beanFactory, Filter.class, new FilterRegistrationBeanAdapter());
+		addAsRegistrationBean(beanFactory, Filter.class, new FilterRegistrationBeanAdapter()); /* 包装 Filter */
 		for (Class<?> listenerType : ServletListenerRegistrationBean.getSupportedTypes()) {
 			addAsRegistrationBean(beanFactory, EventListener.class, (Class<EventListener>) listenerType,
 					new ServletListenerRegistrationBeanAdapter());

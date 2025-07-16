@@ -615,7 +615,7 @@ public class SpringApplication {
 			Class<?> requiredType = GenericTypeResolver.resolveTypeArgument(initializer.getClass(),
 					ApplicationContextInitializer.class);
 			Assert.isInstanceOf(requiredType, context, "Unable to call initializer.");
-			initializer.initialize(context);
+			initializer.initialize(context); /* springboot2.3实例化bootstrap容器后，给应用容器添加ApplicationInitializer PropertySourceBootstrapConfiguration --> 加载nacos配置 */
 		}
 	}
 

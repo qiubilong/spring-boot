@@ -184,7 +184,7 @@ public class WebMvcAutoConfiguration {
 	// on the classpath
 	@SuppressWarnings("deprecation")
 	@Configuration(proxyBeanMethods = false)
-	@Import(EnableWebMvcConfiguration.class) /* 导入WebMvc配置类 */
+	@Import(EnableWebMvcConfiguration.class) /* 导入WebMvc配置类  --> 注入 mvc 三大组件 */
 	@EnableConfigurationProperties({ WebMvcProperties.class, WebProperties.class })
 	@Order(0)
 	public static class WebMvcAutoConfigurationAdapter implements WebMvcConfigurer, ServletContextAware {
@@ -385,7 +385,7 @@ public class WebMvcAutoConfiguration {
 	 * Configuration equivalent to {@code @EnableWebMvc}.
 	 */
 	@Configuration(proxyBeanMethods = false)
-	@EnableConfigurationProperties(WebProperties.class)
+	@EnableConfigurationProperties(WebProperties.class)   /* 扫描父类 @Bean */
 	public static class EnableWebMvcConfiguration extends DelegatingWebMvcConfiguration implements ResourceLoaderAware {
 
 		private final Resources resourceProperties;
@@ -412,7 +412,7 @@ public class WebMvcAutoConfiguration {
 		}
 
 		@Bean
-		@Override
+		@Override  /* Handler 调用适配 */
 		public RequestMappingHandlerAdapter requestMappingHandlerAdapter(
 				@Qualifier("mvcContentNegotiationManager") ContentNegotiationManager contentNegotiationManager,
 				@Qualifier("mvcConversionService") FormattingConversionService conversionService,
@@ -437,7 +437,7 @@ public class WebMvcAutoConfiguration {
 
 		@Bean
 		@Primary
-		@Override     /* Handler 解析匹配 */
+		@Override     /* Handler 匹配解析 */
 		public RequestMappingHandlerMapping requestMappingHandlerMapping(
 				@Qualifier("mvcContentNegotiationManager") ContentNegotiationManager contentNegotiationManager,
 				@Qualifier("mvcConversionService") FormattingConversionService conversionService,
