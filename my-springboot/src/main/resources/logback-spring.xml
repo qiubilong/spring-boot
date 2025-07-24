@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="false">
+    <property name="log.path" value="/data/logs/data"/>
+
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <!-- Handle JUL -->
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date [%thread] [%file:%line] [%X{EagleEye-TraceID}] [%level %logger{0}] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="imChatAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/im/chat.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 按日期和大小滚动 -->
+            <fileNamePattern>${log.path}/im/chat.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>2</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--	 Level: FATAL 0  ERROR 3  WARN 4  INFO 6  DEBUG 7 -->
+    <root level="INFO">
+        <appender-ref ref="console"/>
+    </root>
+    <!--不向parent传递日志-->
+    <logger name="imChat" level="INFO" additivity="false" >
+        <appender-ref ref="imChatAppender"/>
+    </logger>
+</configuration>

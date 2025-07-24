@@ -90,7 +90,7 @@ import org.springframework.util.StringUtils;
  * @author HaiTao Zhang
  * @since 2.0.0
  * @see LoggingSystem#get(ClassLoader)
- */
+ */      /* 事件监听器 --> 启动logback  */
 public class LoggingApplicationListener implements GenericApplicationListener {
 
 	private static final ConfigurationPropertyName LOGGING_LEVEL = ConfigurationPropertyName.of("logging.level");
@@ -217,10 +217,10 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
 		if (event instanceof ApplicationStartingEvent) {
-			onApplicationStartingEvent((ApplicationStartingEvent) event);
+			onApplicationStartingEvent((ApplicationStartingEvent) event);/* 1、创建 单例 log上下文 LoggerContext -- 默认加载 logback.xml */
 		}
 		else if (event instanceof ApplicationEnvironmentPreparedEvent) {
-			onApplicationEnvironmentPreparedEvent((ApplicationEnvironmentPreparedEvent) event);
+			onApplicationEnvironmentPreparedEvent((ApplicationEnvironmentPreparedEvent) event); /* LoggerContext加载配置文件 --> logback.xml > logback-spring.xml */
 		}
 		else if (event instanceof ApplicationPreparedEvent) {
 			onApplicationPreparedEvent((ApplicationPreparedEvent) event);
@@ -234,8 +234,8 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 	}
 
 	private void onApplicationStartingEvent(ApplicationStartingEvent event) {
-		this.loggingSystem = LoggingSystem.get(event.getSpringApplication().getClassLoader());
-		this.loggingSystem.beforeInitialize();
+		this.loggingSystem = LoggingSystem.get(event.getSpringApplication().getClassLoader());/* LogbackLoggingSystem */
+		this.loggingSystem.beforeInitialize();/* 创建 单例 log上下文 LoggerContext -- 默认加载 logback.xml */
 	}
 
 	private void onApplicationEnvironmentPreparedEvent(ApplicationEnvironmentPreparedEvent event) {
@@ -243,7 +243,7 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 		if (this.loggingSystem == null) {
 			this.loggingSystem = LoggingSystem.get(springApplication.getClassLoader());
 		}
-		initialize(event.getEnvironment(), springApplication.getClassLoader());
+		initialize(event.getEnvironment(), springApplication.getClassLoader());/*  加载 logback-spring.xml*/
 	}
 
 	private void onApplicationPreparedEvent(ApplicationPreparedEvent event) {
@@ -259,7 +259,7 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 			beanFactory.registerSingleton(LOGGER_GROUPS_BEAN_NAME, this.loggerGroups);
 		}
 		if (!beanFactory.containsBean(LOGGING_LIFECYCLE_BEAN_NAME) && applicationContext.getParent() == null) {
-			beanFactory.registerSingleton(LOGGING_LIFECYCLE_BEAN_NAME, new Lifecycle());
+			beanFactory.registerSingleton(LOGGING_LIFECYCLE_BEAN_NAME, new Lifecycle());/* 关闭LoggerContext - 声明周期器 */
 		}
 	}
 
@@ -295,7 +295,7 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 		}
 		this.loggerGroups = new LoggerGroups(DEFAULT_GROUP_LOGGERS);
 		initializeEarlyLoggingLevel(environment);
-		initializeSystem(environment, this.loggingSystem, this.logFile);
+		initializeSystem(environment, this.loggingSystem, this.logFile);/*  加载 logback-spring.xml*/
 		initializeFinalLoggingLevels(environment, this.loggingSystem);
 		registerShutdownHookIfNecessary(environment, this.loggingSystem);
 	}
@@ -322,11 +322,11 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 	}
 
 	private void initializeSystem(ConfigurableEnvironment environment, LoggingSystem system, LogFile logFile) {
-		String logConfig = StringUtils.trimWhitespace(environment.getProperty(CONFIG_PROPERTY));
+		String logConfig = StringUtils.trimWhitespace(environment.getProperty(CONFIG_PROPERTY));/* 指定配置 - logging.config */
 		try {
 			LoggingInitializationContext initializationContext = new LoggingInitializationContext(environment);
 			if (ignoreLogConfig(logConfig)) {
-				system.initialize(initializationContext, null, logFile);
+				system.initialize(initializationContext, null, logFile);/* 未指定logging.config，加载默认配置 logback-spring.xml */
 			}
 			else {
 				system.initialize(initializationContext, logConfig, logFile);
@@ -466,7 +466,7 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 		@Override
 		public void stop() {
 			this.running = false;
-			cleanupLoggingSystem();
+			cleanupLoggingSystem(); /* 关闭logger */
 		}
 
 		@Override

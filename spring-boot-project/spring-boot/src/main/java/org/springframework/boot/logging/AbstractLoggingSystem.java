@@ -57,7 +57,7 @@ public abstract class AbstractLoggingSystem extends LoggingSystem {
 			initializeWithSpecificConfig(initializationContext, configLocation, logFile);
 			return;
 		}
-		initializeWithConventions(initializationContext, logFile);
+		initializeWithConventions(initializationContext, logFile);/* 加载默认配置 logback-spring.xml */
 	}
 
 	private void initializeWithSpecificConfig(LoggingInitializationContext initializationContext, String configLocation,
@@ -67,20 +67,20 @@ public abstract class AbstractLoggingSystem extends LoggingSystem {
 	}
 
 	private void initializeWithConventions(LoggingInitializationContext initializationContext, LogFile logFile) {
-		String config = getSelfInitializationConfig();
+		String config = getSelfInitializationConfig();/* 1、查找 { "logback-test.groovy", "logback-test.xml", "logback.groovy", "logback.xml" }; */
 		if (config != null && logFile == null) {
 			// self initialization has occurred, reinitialize in case of property changes
 			reinitialize(initializationContext);
 			return;
 		}
 		if (config == null) {
-			config = getSpringInitializationConfig();
+			config = getSpringInitializationConfig();/* 2、查找 { "logback-test.groovy", "logback-test", "logback", "logback" } + -spring .xml */
 		}
 		if (config != null) {
 			loadConfiguration(initializationContext, config, logFile);
 			return;
 		}
-		loadDefaults(initializationContext, logFile);
+		loadDefaults(initializationContext, logFile); /* 3、默认配置，root输出到控制台console */
 	}
 
 	/**

@@ -55,7 +55,7 @@ public abstract class LoggingSystem {
 	 * implementation.
 	 */
 	public static final String ROOT_LOGGER_NAME = "ROOT";
-
+                                                               /* log工厂 */
 	private static final LoggingSystemFactory SYSTEM_FACTORY = LoggingSystemFactory.fromSpringFactories();
 
 	/**
@@ -155,7 +155,7 @@ public abstract class LoggingSystem {
 				return new NoOpLoggingSystem();
 			}
 			return get(classLoader, loggingSystemClassName);
-		}
+		} /* 返回 LogbackLoggingSystem  - */
 		LoggingSystem loggingSystem = SYSTEM_FACTORY.getLoggingSystem(classLoader);
 		Assert.state(loggingSystem != null, "No suitable logging system located");
 		return loggingSystem;

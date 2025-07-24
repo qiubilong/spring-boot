@@ -115,7 +115,7 @@ public class LogbackLoggingSystem extends Slf4JLoggingSystem {
 
 	@Override
 	public void beforeInitialize() {
-		LoggerContext loggerContext = getLoggerContext();
+		LoggerContext loggerContext = getLoggerContext();/* 创建 log上下文 -- 返回单例 LoggerContext -- 默认加载 logback.xml */
 		if (isAlreadyInitialized(loggerContext)) {
 			return;
 		}
@@ -129,9 +129,9 @@ public class LogbackLoggingSystem extends Slf4JLoggingSystem {
 		if (isAlreadyInitialized(loggerContext)) {
 			return;
 		}
-		super.initialize(initializationContext, configLocation, logFile);
+		super.initialize(initializationContext, configLocation, logFile);/* 加载默认配置 logback-spring.xml */
 		loggerContext.getTurboFilterList().remove(FILTER);
-		markAsInitialized(loggerContext);
+		markAsInitialized(loggerContext);/* loggerContext初始化标记，防止父子容器重复初始化 */
 		if (StringUtils.hasText(System.getProperty(CONFIGURATION_FILE_PROPERTY))) {
 			getLogger(LogbackLoggingSystem.class.getName()).warn("Ignoring '" + CONFIGURATION_FILE_PROPERTY
 					+ "' system property. Please use 'logging.config' instead.");
@@ -288,9 +288,9 @@ public class LogbackLoggingSystem extends Slf4JLoggingSystem {
 		LoggerContext factory = getLoggerContext();
 		return factory.getLogger(getLoggerName(name));
 	}
-
+    /* 返回单例 - LoggerContext */
 	private LoggerContext getLoggerContext() {
-		ILoggerFactory factory = StaticLoggerBinder.getSingleton().getLoggerFactory();
+		ILoggerFactory factory = StaticLoggerBinder.getSingleton().getLoggerFactory(); /* 创建 logback 日志上下文 LoggerContext --> 加载 logback.xml */
 		Assert.isInstanceOf(LoggerContext.class, factory,
 				() -> String.format(
 						"LoggerFactory is not a Logback LoggerContext but Logback is on "
