@@ -155,8 +155,8 @@ public abstract class LoggingSystem {
 				return new NoOpLoggingSystem();
 			}
 			return get(classLoader, loggingSystemClassName);
-		} /* 返回 LogbackLoggingSystem  - */
-		LoggingSystem loggingSystem = SYSTEM_FACTORY.getLoggingSystem(classLoader);
+		}
+		LoggingSystem loggingSystem = SYSTEM_FACTORY.getLoggingSystem(classLoader); /* 返回 LogbackLoggingSystem  */
 		Assert.state(loggingSystem != null, "No suitable logging system located");
 		return loggingSystem;
 	}

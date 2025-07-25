@@ -19,7 +19,7 @@ org.springframework.boot.context.config.ConfigDataLoader=\
 org.springframework.boot.context.config.ConfigTreeConfigDataLoader,\
 org.springframework.boot.context.config.StandardConfigDataLoader
 
-# Application Context Factories ## Spring????
+# Application Context Factories ## Spring容器工厂
 org.springframework.boot.ApplicationContextFactory=\
 org.springframework.boot.web.reactive.context.AnnotationConfigReactiveWebServerApplicationContext.Factory,\
 org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext.Factory

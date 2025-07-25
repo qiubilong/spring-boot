@@ -217,10 +217,10 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
 		if (event instanceof ApplicationStartingEvent) {
-			onApplicationStartingEvent((ApplicationStartingEvent) event);/* 1、创建 单例 log上下文 LoggerContext -- 默认加载 logback.xml */
+			onApplicationStartingEvent((ApplicationStartingEvent) event);/* 1、创建 单例 log上下文 LoggerContext -- 默认首先加载 logback.xml */
 		}
 		else if (event instanceof ApplicationEnvironmentPreparedEvent) {
-			onApplicationEnvironmentPreparedEvent((ApplicationEnvironmentPreparedEvent) event); /* LoggerContext加载配置文件 --> logback.xml > logback-spring.xml */
+			onApplicationEnvironmentPreparedEvent((ApplicationEnvironmentPreparedEvent) event); /* 2、LoggerContext加载配置文件 --> logback.xml > logback-spring.xml */
 		}
 		else if (event instanceof ApplicationPreparedEvent) {
 			onApplicationPreparedEvent((ApplicationPreparedEvent) event);

@@ -2,12 +2,10 @@
 <configuration debug="false" scan="false">
     <property name="log.path" value="/data/logs/data"/>
 
-    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook">
+		<delay>5</delay><!-- 默认0s，建议搭配AsyncAppender使用，同步输出器 FileAppender没必要使用。  -->
+	</shutdownHook>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <!-- Handle JUL -->
-    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
-        <resetJUL>true</resetJUL>
-    </contextListener>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -38,3 +36,5 @@
         <appender-ref ref="imChatAppender"/>
     </logger>
 </configuration>
+
+		<!-- LoggingApplicationListener 初始化日志 -->
