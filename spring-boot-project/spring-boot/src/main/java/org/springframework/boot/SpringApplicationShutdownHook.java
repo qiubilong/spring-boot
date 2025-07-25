@@ -53,7 +53,7 @@ class SpringApplicationShutdownHook implements Runnable { /* Spring关闭钩子 
 
 	private static final Log logger = LogFactory.getLog(SpringApplicationShutdownHook.class);
 
-	private final Handlers handlers = new Handlers();
+	private final Handlers handlers = new Handlers(); /* 关闭钩子 - 处理器集合 */
 
 	private final Set<ConfigurableApplicationContext> contexts = new LinkedHashSet<>();
 
@@ -101,7 +101,7 @@ class SpringApplicationShutdownHook implements Runnable { /* Spring关闭钩子 
 	}
 
 	@Override
-	public void run() { /* spring关闭钩子 */
+	public void run() { /* 运行 - spring关闭钩子 */
 		Set<ConfigurableApplicationContext> contexts;
 		Set<ConfigurableApplicationContext> closedContexts;
 		Set<Runnable> actions;
@@ -113,7 +113,7 @@ class SpringApplicationShutdownHook implements Runnable { /* Spring关闭钩子 
 		}
 		contexts.forEach(this::closeAndWait); /* 关闭spring容器 */
 		closedContexts.forEach(this::closeAndWait);
-		actions.forEach(Runnable::run);
+		actions.forEach(Runnable::run);/* 调用关闭钩子 = handlers */
 	}
 
 	boolean isApplicationContextRegistered(ConfigurableApplicationContext context) {

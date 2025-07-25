@@ -14,6 +14,6 @@ public class MyApplicationListener implements ApplicationListener {
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
 		//log.info("onApplicationEvent event={}",event.getClass());
-		System.out.println("onApplicationEvent event="+event.getClass());
+		System.out.println("onApplicationEvent event="+event.getClass());/* log需要通过LoggingApplicationListener初始化，所以这里的log.info不能输出日志 */
 	}
 }

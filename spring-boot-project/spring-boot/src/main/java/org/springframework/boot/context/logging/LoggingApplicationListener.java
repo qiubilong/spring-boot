@@ -219,11 +219,11 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 		if (event instanceof ApplicationStartingEvent) {
 			onApplicationStartingEvent((ApplicationStartingEvent) event);/* 1、创建 单例 log上下文 LoggerContext -- 默认首先加载 logback.xml */
 		}
-		else if (event instanceof ApplicationEnvironmentPreparedEvent) {
-			onApplicationEnvironmentPreparedEvent((ApplicationEnvironmentPreparedEvent) event); /* 2、LoggerContext加载配置文件 --> logback.xml > logback-spring.xml */
+		else if (event instanceof ApplicationEnvironmentPreparedEvent) { /* 2、LoggerContext加载配置文件 --> logback.xml > logback-spring.xml */
+			onApplicationEnvironmentPreparedEvent((ApplicationEnvironmentPreparedEvent) event);
 		}
 		else if (event instanceof ApplicationPreparedEvent) {
-			onApplicationPreparedEvent((ApplicationPreparedEvent) event);
+			onApplicationPreparedEvent((ApplicationPreparedEvent) event); /* 3、注册 LoggerContext关闭 - 生命周期监听器 */
 		}
 		else if (event instanceof ContextClosedEvent) {
 			onContextClosedEvent((ContextClosedEvent) event);
@@ -259,7 +259,7 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 			beanFactory.registerSingleton(LOGGER_GROUPS_BEAN_NAME, this.loggerGroups);
 		}
 		if (!beanFactory.containsBean(LOGGING_LIFECYCLE_BEAN_NAME) && applicationContext.getParent() == null) {
-			beanFactory.registerSingleton(LOGGING_LIFECYCLE_BEAN_NAME, new Lifecycle());/* 关闭LoggerContext - 声明周期器 */
+			beanFactory.registerSingleton(LOGGING_LIFECYCLE_BEAN_NAME, new Lifecycle());/* 关闭LoggerContext - 生命周期器 */
 		}
 	}
 
@@ -297,7 +297,7 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 		initializeEarlyLoggingLevel(environment);
 		initializeSystem(environment, this.loggingSystem, this.logFile);/*  加载 logback-spring.xml*/
 		initializeFinalLoggingLevels(environment, this.loggingSystem);
-		registerShutdownHookIfNecessary(environment, this.loggingSystem);
+		registerShutdownHookIfNecessary(environment, this.loggingSystem); /* 注册 关闭日志容器 - 钩子 -  LoggerContext.stop() */
 	}
 
 	private LoggingSystemProperties getLoggingSystemProperties(ConfigurableEnvironment environment) {
@@ -416,9 +416,9 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 
 	private void registerShutdownHookIfNecessary(Environment environment, LoggingSystem loggingSystem) {
 		if (environment.getProperty(REGISTER_SHUTDOWN_HOOK_PROPERTY, Boolean.class, true)) {
-			Runnable shutdownHandler = loggingSystem.getShutdownHandler();
+			Runnable shutdownHandler = loggingSystem.getShutdownHandler(); /* LogbackLoggingSystem -->  getLoggerContext().stop(); */
 			if (shutdownHandler != null && shutdownHookRegistered.compareAndSet(false, true)) {
-				registerShutdownHook(shutdownHandler);
+				registerShutdownHook(shutdownHandler); /* 注册钩子 - getLoggerContext().stop() */
 			}
 		}
 	}
@@ -466,7 +466,7 @@ public class LoggingApplicationListener implements GenericApplicationListener {
 		@Override
 		public void stop() {
 			this.running = false;
-			cleanupLoggingSystem(); /* 关闭logger */
+			cleanupLoggingSystem(); /* 清理 logger */
 		}
 
 		@Override

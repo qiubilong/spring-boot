@@ -3,7 +3,7 @@
     <property name="log.path" value="/data/logs/data"/>
 
     <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook">
-		<delay>5</delay><!-- 默认0s，建议搭配AsyncAppender使用，同步输出器 FileAppender没必要使用。  -->
+		<delay>5</delay><!-- 默认0s，建议搭配AsyncAppender使用，同步输出器 FileAppender没作用。  -->
 	</shutdownHook>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
