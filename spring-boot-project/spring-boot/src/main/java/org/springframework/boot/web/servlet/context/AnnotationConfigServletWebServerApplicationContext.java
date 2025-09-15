@@ -73,8 +73,8 @@ public class AnnotationConfigServletWebServerApplicationContext extends ServletW
 	 * {@linkplain #refresh refreshed}.
 	 */
 	public AnnotationConfigServletWebServerApplicationContext() {
-		this.reader = new AnnotatedBeanDefinitionReader(this);
-		this.scanner = new ClassPathBeanDefinitionScanner(this);
+		this.reader = new AnnotatedBeanDefinitionReader(this);  /* 用于注册AnnotatedBeanDefinition 和  注入Bean工厂处理器和 Bean处理器  */
+		this.scanner = new ClassPathBeanDefinitionScanner(this); /* 扫描候选对象 */
 	}
 
 	/**
@@ -228,7 +228,7 @@ public class AnnotationConfigServletWebServerApplicationContext extends ServletW
 		@Override
 		public ConfigurableApplicationContext create(WebApplicationType webApplicationType) {
 			return (webApplicationType != WebApplicationType.SERVLET) ? null
-					: new AnnotationConfigServletWebServerApplicationContext();
+					: new AnnotationConfigServletWebServerApplicationContext(); /* 创建web spring 容器 */
 		}
 
 	}

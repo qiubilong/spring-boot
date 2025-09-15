@@ -25,7 +25,7 @@ package org.springframework.boot.context.config;
 class ConfigDataResolutionResult {
 
 	private final ConfigDataLocation location;//配置路径 optional:file:./;optional:file:./config/;optional:file:./config/*/
-
+    /* NacosConfigDataResource  、 StandardConfigDataResource  */
 	private final ConfigDataResource resource;// StandardConfigDataResource -- 文件 file:./application.yaml
 
 	private final boolean profileSpecific;

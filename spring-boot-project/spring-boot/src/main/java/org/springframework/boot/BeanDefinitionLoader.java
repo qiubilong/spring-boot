@@ -88,10 +88,10 @@ class BeanDefinitionLoader {
 		Assert.notNull(registry, "Registry must not be null");
 		Assert.notEmpty(sources, "Sources must not be empty");
 		this.sources = sources;
-		this.annotatedReader = new AnnotatedBeanDefinitionReader(registry);
+		this.annotatedReader = new AnnotatedBeanDefinitionReader(registry); /* BeanDefinition 解析Bean注解并注入BeanFactory */
 		this.xmlReader = (XML_ENABLED ? new XmlBeanDefinitionReader(registry) : null);
 		this.groovyReader = (isGroovyPresent() ? new GroovyBeanDefinitionReader(registry) : null);
-		this.scanner = new ClassPathBeanDefinitionScanner(registry);
+		this.scanner = new ClassPathBeanDefinitionScanner(registry); /* BeanDefinition扫描 */
 		this.scanner.addExcludeFilter(new ClassExcludeFilter(sources));
 	}
 
@@ -135,7 +135,7 @@ class BeanDefinitionLoader {
 	 * Load the sources into the reader.
 	 */
 	void load() {
-		for (Object source : this.sources) {
+		for (Object source : this.sources) { /* 加载主配置类 */
 			load(source);
 		}
 	}
@@ -143,7 +143,7 @@ class BeanDefinitionLoader {
 	private void load(Object source) {
 		Assert.notNull(source, "Source must not be null");
 		if (source instanceof Class<?>) {
-			load((Class<?>) source); /* 加载主类 */
+			load((Class<?>) source); /* 加载主配置类 */
 			return;
 		}
 		if (source instanceof Resource) {

@@ -54,7 +54,7 @@ import org.springframework.util.StringUtils;
  * @author Scott Frederick
  * @since 2.4.0
  */
-public class StandardConfigDataLocationResolver
+public class StandardConfigDataLocationResolver  /* 加载通用配置文件 */
 		implements ConfigDataLocationResolver<StandardConfigDataResource>, Ordered {
 
 	private static final String PREFIX = "resource:";
@@ -70,7 +70,7 @@ public class StandardConfigDataLocationResolver
 	private static final String NO_PROFILE = null;
 
 	private final Log logger;
-    //配置源加载器 - PropertiesPropertySourceLoader、YamlPropertySourceLoader
+    /* 配置源加载器 - PropertiesPropertySourceLoader、YamlPropertySourceLoader */
 	private final List<PropertySourceLoader> propertySourceLoaders;
 
 	private final String[] configNames; /* ## 配置文件名，默认 application */
@@ -109,14 +109,14 @@ public class StandardConfigDataLocationResolver
 	}
 
 	@Override
-	public boolean isResolvable(ConfigDataLocationResolverContext context, ConfigDataLocation location) {
+	public boolean isResolvable(ConfigDataLocationResolverContext context, ConfigDataLocation location) { /* 默认true */
 		return true;
 	}
 
 	@Override
 	public List<StandardConfigDataResource> resolve(ConfigDataLocationResolverContext context,
 			ConfigDataLocation location) throws ConfigDataNotFoundException {
-		return resolve(getReferences(context, location.split()));
+		return resolve(getReferences(context, location.split()));/* 加载通用一般配置文件 */
 	}
 
 	private Set<StandardConfigDataReference> getReferences(ConfigDataLocationResolverContext context,
@@ -294,7 +294,7 @@ public class StandardConfigDataLocationResolver
 		if (!this.resourceLoader.isPattern(reference.getResourceLocation())) {
 			return resolveNonPattern(reference);
 		}
-		return resolvePattern(reference);
+		return resolvePattern(reference); /* 尝试加载资源 */
 	}
 
 	private List<StandardConfigDataResource> resolveNonPattern(StandardConfigDataReference reference) {

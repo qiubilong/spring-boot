@@ -37,7 +37,7 @@ import org.springframework.util.ReflectionUtils;
  * @author Andy Wilkinson
  * @author Chris Bono
  */
-class SpringApplicationRunListeners {
+class SpringApplicationRunListeners {//apringboot运行事件聚合器
 
 	private final Log log;
 
@@ -60,16 +60,16 @@ class SpringApplicationRunListeners {
 					}
 				});
 	}
-
+	/* enviromen t对象 已经创建好了 */
 	void environmentPrepared(ConfigurableBootstrapContext bootstrapContext, ConfigurableEnvironment environment) {
 		doWithListeners("spring.boot.application.environment-prepared",
 				(listener) -> listener.environmentPrepared(bootstrapContext, environment));
 	}
-
+	/* ApplicationContext 对象 已经创建好了 */
 	void contextPrepared(ConfigurableApplicationContext context) {
 		doWithListeners("spring.boot.application.context-prepared", (listener) -> listener.contextPrepared(context));
 	}
-
+	/* ApplicationContext 对象 已经配置好了 */
 	void contextLoaded(ConfigurableApplicationContext context) {
 		doWithListeners("spring.boot.application.context-loaded", (listener) -> listener.contextLoaded(context));
 	}

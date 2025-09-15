@@ -49,7 +49,7 @@ import org.springframework.util.ObjectUtils;
  *
  * @author Phillip Webb
  * @author Madhura Bhave
- */
+ */     /* 配置贡献者 集合 */
 class ConfigDataEnvironmentContributors implements Iterable<ConfigDataEnvironmentContributor> {
 
 	private static final Predicate<ConfigDataEnvironmentContributor> NO_CONTRIBUTOR_FILTER = (contributor) -> true;
@@ -70,7 +70,7 @@ class ConfigDataEnvironmentContributors implements Iterable<ConfigDataEnvironmen
 			List<ConfigDataEnvironmentContributor> contributors) {
 		this.logger = logFactory.getLog(getClass());
 		this.bootstrapContext = bootstrapContext;
-		this.root = ConfigDataEnvironmentContributor.of(contributors);
+		this.root = ConfigDataEnvironmentContributor.of(contributors); /* 创建 配置贡献者 集合 */
 	}
 
 	private ConfigDataEnvironmentContributors(Log logger, ConfigurableBootstrapContext bootstrapContext,
@@ -91,7 +91,7 @@ class ConfigDataEnvironmentContributors implements Iterable<ConfigDataEnvironmen
 	 */
 	ConfigDataEnvironmentContributors withProcessedImports(ConfigDataImporter importer,
 			ConfigDataActivationContext activationContext) {
-		ImportPhase importPhase = ImportPhase.get(activationContext);
+		ImportPhase importPhase = ImportPhase.get(activationContext);/* 判断有没有 profile */
 		this.logger.trace(LogMessage.format("Processing imports for phase %s. %s", importPhase,
 				(activationContext != null) ? activationContext : "no activation context"));
 		ConfigDataEnvironmentContributors result = this;
@@ -103,7 +103,7 @@ class ConfigDataEnvironmentContributors implements Iterable<ConfigDataEnvironmen
 				return result;
 			}
 			if (contributor.getKind() == Kind.UNBOUND_IMPORT) {
-				ConfigDataEnvironmentContributor bound = contributor.withBoundProperties(result, activationContext);
+				ConfigDataEnvironmentContributor bound = contributor.withBoundProperties(result, activationContext);/* 处理导入的配置 spring.config.import */
 				result = new ConfigDataEnvironmentContributors(this.logger, this.bootstrapContext,
 						result.getRoot().withReplacement(contributor, bound));
 				continue;
@@ -117,7 +117,7 @@ class ConfigDataEnvironmentContributors implements Iterable<ConfigDataEnvironmen
 					locationResolverContext, loaderContext, imports);
 			this.logger.trace(LogMessage.of(() -> getImportedMessage(imported.keySet())));
 			ConfigDataEnvironmentContributor contributorAndChildren = contributor.withChildren(importPhase,
-					asContributors(imported));
+					asContributors(imported));/* 生成新配置贡献者 */
 			result = new ConfigDataEnvironmentContributors(this.logger, this.bootstrapContext,
 					result.getRoot().withReplacement(contributor, contributorAndChildren));
 			processed++;
@@ -166,7 +166,7 @@ class ConfigDataEnvironmentContributors implements Iterable<ConfigDataEnvironmen
 			}
 			else {
 				for (int i = data.getPropertySources().size() - 1; i >= 0; i--) {
-					contributors.add(ConfigDataEnvironmentContributor.ofUnboundImport(location, resource,
+					contributors.add(ConfigDataEnvironmentContributor.ofUnboundImport(location, resource,  /* 初始配置读取完毕，比如 application.yaml配置，生成新的配置贡献者，然后可以解析里面的spring.config.import */
 							profileSpecific, data, i));
 				}
 			}

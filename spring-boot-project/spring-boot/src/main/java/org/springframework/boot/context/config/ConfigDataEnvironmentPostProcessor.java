@@ -99,7 +99,7 @@ public class ConfigDataEnvironmentPostProcessor implements EnvironmentPostProces
 		try {
 			this.logger.trace("Post-processing environment to add config data");
 			resourceLoader = (resourceLoader != null) ? resourceLoader : new DefaultResourceLoader();
-			getConfigDataEnvironment(environment, resourceLoader, additionalProfiles).processAndApply();/* 创建 加载配置文件 环境对象 */
+			getConfigDataEnvironment(environment, resourceLoader, additionalProfiles).processAndApply();/* 加载 nacos or 本地配置文件 application.properties */
 		}
 		catch (UseLegacyConfigProcessingException ex) {
 			this.logger.debug(LogMessage.format("Switching to legacy config file processing [%s]",

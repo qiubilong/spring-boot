@@ -38,7 +38,7 @@ import org.springframework.core.io.ResourceLoader;
  * @author Phillip Webb
  * @since 2.4.0
  */
-public class EnvironmentPostProcessorApplicationListener implements SmartApplicationListener, Ordered {
+public class EnvironmentPostProcessorApplicationListener implements SmartApplicationListener, Ordered { /* 环境配置Environment - 加载配置 监听器  */
 
 	/**
 	 * The default order for the processor.
@@ -94,9 +94,9 @@ public class EnvironmentPostProcessorApplicationListener implements SmartApplica
 		}
 	}
 
-	private void onApplicationEnvironmentPreparedEvent(ApplicationEnvironmentPreparedEvent event) {
-		ConfigurableEnvironment environment = event.getEnvironment();
-		SpringApplication application = event.getSpringApplication();
+	private void onApplicationEnvironmentPreparedEvent(ApplicationEnvironmentPreparedEvent event) {                      //
+		ConfigurableEnvironment environment = event.getEnvironment();                                                    // 1、RandomValuePropertySourceEnvironmentPostProcessor 2、SystemEnvironmentPropertySourceEnvironmentPostProcessor
+		SpringApplication application = event.getSpringApplication();                                                    // 3、SpringApplicationJsonEnvironmentPostProcessor     4、ConfigDataEnvironmentPostProcessor
 		for (EnvironmentPostProcessor postProcessor : getEnvironmentPostProcessors(application.getResourceLoader(),
 				event.getBootstrapContext())) {
 			postProcessor.postProcessEnvironment(environment, application); /* ConfigDataEnvironmentPostProcessor -->加载 nacos、本地 配置文件application.properties等 */

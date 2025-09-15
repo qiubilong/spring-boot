@@ -50,7 +50,7 @@ import org.springframework.util.CollectionUtils;
  *
  * @author Phillip Webb
  * @author Madhura Bhave
- */
+ */   /* 配置贡献者 */
 class ConfigDataEnvironmentContributor implements Iterable<ConfigDataEnvironmentContributor> {//配置项集合
 
 	private static final ConfigData.Options EMPTY_LOCATION_OPTIONS = ConfigData.Options
@@ -62,7 +62,7 @@ class ConfigDataEnvironmentContributor implements Iterable<ConfigDataEnvironment
 
 	private final boolean fromProfileSpecificImport;
 
-	private final PropertySource<?> propertySource;
+	private final PropertySource<?> propertySource; /* 已经解析的配置 */
 
 	private final ConfigurationPropertySource configurationPropertySource;
 
@@ -231,7 +231,7 @@ class ConfigDataEnvironmentContributor implements Iterable<ConfigDataEnvironment
 	 * @param activationContext the activation context
 	 * @return a new contributor instance
 	 */
-	ConfigDataEnvironmentContributor withBoundProperties(Iterable<ConfigDataEnvironmentContributor> contributors,
+	ConfigDataEnvironmentContributor withBoundProperties(Iterable<ConfigDataEnvironmentContributor> contributors, /* 获取导入配置 */
 			ConfigDataActivationContext activationContext) {
 		Iterable<ConfigurationPropertySource> sources = Collections.singleton(getConfigurationPropertySource());
 		PlaceholdersResolver placeholdersResolver = new ConfigDataEnvironmentContributorPlaceholdersResolver(
@@ -448,7 +448,7 @@ class ConfigDataEnvironmentContributor implements Iterable<ConfigDataEnvironment
 		/**
 		 * An initial import that needs to be processed.
 		 */
-		INITIAL_IMPORT,
+		INITIAL_IMPORT, /* 初始配置贡献者 */
 
 		/**
 		 * An existing property source that contributes properties but no imports.
@@ -459,7 +459,7 @@ class ConfigDataEnvironmentContributor implements Iterable<ConfigDataEnvironment
 		 * A contributor with {@link ConfigData} imported from another contributor but not
 		 * yet bound.
 		 */
-		UNBOUND_IMPORT,
+		UNBOUND_IMPORT, /* INITIAL_IMPORT加载完毕后转换UNBOUND_IMPORT，     可解析spring.config.import 导入文件 */
 
 		/**
 		 * A contributor with {@link ConfigData} imported from another contributor that
@@ -518,7 +518,7 @@ class ConfigDataEnvironmentContributor implements Iterable<ConfigDataEnvironment
 
 		private ContributorIterator() {
 			this.phase = ImportPhase.AFTER_PROFILE_ACTIVATION;
-			this.children = getChildren(this.phase).iterator();
+			this.children = getChildren(this.phase).iterator(); /* 默认先遍历激活后的配置文件，激活后的文件优先级更高 */
 			this.current = Collections.emptyIterator();
 		}
 
@@ -549,14 +549,14 @@ class ConfigDataEnvironmentContributor implements Iterable<ConfigDataEnvironment
 				this.current = this.children.next().iterator();
 				return fetchIfNecessary();
 			}
-			if (this.phase == ImportPhase.AFTER_PROFILE_ACTIVATION) {
+			if (this.phase == ImportPhase.AFTER_PROFILE_ACTIVATION) { /* 遍历激活后的配置文件,接着遍历激活前的配置文件，保证配置文件优先级    */
 				this.phase = ImportPhase.BEFORE_PROFILE_ACTIVATION;
 				this.children = getChildren(this.phase).iterator();
 				return fetchIfNecessary();
 			}
 			if (this.phase == ImportPhase.BEFORE_PROFILE_ACTIVATION) {
 				this.phase = null;
-				this.next = ConfigDataEnvironmentContributor.this;
+				this.next = ConfigDataEnvironmentContributor.this;//遍历完毕，回到自己
 				return this.next;
 			}
 			return null;

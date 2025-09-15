@@ -49,10 +49,10 @@ public class SystemEnvironmentPropertySourceEnvironmentPostProcessor implements 
 
 	@Override
 	public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-		String sourceName = StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME;
+		String sourceName = StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME;/* 操作系统变量 */
 		PropertySource<?> propertySource = environment.getPropertySources().get(sourceName);
-		if (propertySource != null) {//系统环境变量systemEnvironment
-			replacePropertySource(environment, sourceName, propertySource, application.getEnvironmentPrefix());
+		if (propertySource != null) {/* 系统环境变量systemEnvironment */
+			replacePropertySource(environment, sourceName, propertySource, application.getEnvironmentPrefix()); /* 多前缀 操作系统环境变量 --------可忽略 */
 		}
 	}
 
@@ -76,7 +76,7 @@ public class SystemEnvironmentPropertySourceEnvironmentPostProcessor implements 
 
 	/**
 	 * {@link SystemEnvironmentPropertySource} that also tracks {@link Origin}.
-	 */
+	 */     /* 多前缀 操作系统环境变量 --------可忽略 */
 	protected static class OriginAwareSystemEnvironmentPropertySource extends SystemEnvironmentPropertySource
 			implements OriginLookup<String> {
 

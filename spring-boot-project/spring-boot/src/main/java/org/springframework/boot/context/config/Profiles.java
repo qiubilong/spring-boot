@@ -66,7 +66,7 @@ public class Profiles implements Iterable<String> {
 
 	private final MultiValueMap<String, String> groups;
 
-	private final List<String> activeProfiles;
+	private final List<String> activeProfiles; /* 激活环境分支 */
 
 	private final List<String> defaultProfiles;
 
@@ -79,7 +79,7 @@ public class Profiles implements Iterable<String> {
 	 */
 	Profiles(Environment environment, Binder binder, Collection<String> additionalProfiles) {
 		this.groups = binder.bind("spring.profiles.group", STRING_STRINGS_MAP).orElseGet(LinkedMultiValueMap::new);
-		this.activeProfiles = expandProfiles(getActivatedProfiles(environment, binder, additionalProfiles));
+		this.activeProfiles = expandProfiles(getActivatedProfiles(environment, binder, additionalProfiles)); /*  environment中读取 spring.profiles.active */
 		this.defaultProfiles = expandProfiles(getDefaultProfiles(environment, binder));
 	}
 
@@ -91,9 +91,9 @@ public class Profiles implements Iterable<String> {
 	private List<String> getDefaultProfiles(Environment environment, Binder binder) {
 		return asUniqueItemList(getProfiles(environment, binder, Type.DEFAULT));
 	}
-
+    /*  environment中读取 spring.profiles.active */
 	private Collection<String> getProfiles(Environment environment, Binder binder, Type type) {
-		String environmentPropertyValue = environment.getProperty(type.getName());
+		String environmentPropertyValue = environment.getProperty(type.getName()); /* name = spring.profiles.active*/
 		Set<String> environmentPropertyProfiles = (!StringUtils.hasLength(environmentPropertyValue))
 				? Collections.emptySet()
 				: StringUtils.commaDelimitedListToSet(StringUtils.trimAllWhitespace(environmentPropertyValue));
@@ -215,7 +215,7 @@ public class Profiles implements Iterable<String> {
 	 * A profiles type that can be obtained.
 	 */
 	private enum Type {
-
+        /* name = spring.profiles.active */
 		ACTIVE(AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME, Environment::getActiveProfiles, true,
 				Collections.emptySet()),
 

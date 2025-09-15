@@ -9,7 +9,7 @@ org.springframework.boot.env.PropertySourceLoader=\
 org.springframework.boot.env.PropertiesPropertySourceLoader,\
 org.springframework.boot.env.YamlPropertySourceLoader
 
-# ConfigData Location Resolvers
+# ConfigData Location Resolvers - 配置路径解析器
 org.springframework.boot.context.config.ConfigDataLocationResolver=\
 org.springframework.boot.context.config.ConfigTreeConfigDataLocationResolver,\
 org.springframework.boot.context.config.StandardConfigDataLocationResolver
@@ -24,7 +24,7 @@ org.springframework.boot.ApplicationContextFactory=\
 org.springframework.boot.web.reactive.context.AnnotationConfigReactiveWebServerApplicationContext.Factory,\
 org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext.Factory
 
-# Run Listeners
+# Run Listeners - springboot 事件发布 聚合器
 org.springframework.boot.SpringApplicationRunListener=\
 org.springframework.boot.context.event.EventPublishingRunListener
 

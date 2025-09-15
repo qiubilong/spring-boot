@@ -53,7 +53,7 @@ import org.springframework.web.context.support.StandardServletEnvironment;
  * @author Madhura Bhave
  * @author Artsiom Yudovin
  * @since 1.3.0
- */     //java -Dspring.application.json='{"server":{"port":8081}}' -jar app.jar
+ */     /* 例子 java -Dspring.application.json='{"server":{"port":8081}}' -jar app.jar */
 public class SpringApplicationJsonEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 /* 通过环境变量或系统属性传递 JSON 格式的配置，覆盖或扩展 application.properties/application.yml 中的配置 */
 	/**
@@ -93,7 +93,7 @@ public class SpringApplicationJsonEnvironmentPostProcessor implements Environmen
 	@Override
 	public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
 		MutablePropertySources propertySources = environment.getPropertySources();
-		propertySources.stream().map(JsonPropertyValue::get).filter(Objects::nonNull).findFirst()//解析key = spring.application.json数据源
+		propertySources.stream().map(JsonPropertyValue::get).filter(Objects::nonNull).findFirst()/* 解析 jvm参数 key = spring.application.json 数据源 */
 				.ifPresent((v) -> processJson(environment, v));
 	}
 
@@ -101,7 +101,7 @@ public class SpringApplicationJsonEnvironmentPostProcessor implements Environmen
 		JsonParser parser = JsonParserFactory.getJsonParser();
 		Map<String, Object> map = parser.parseMap(propertyValue.getJson());
 		if (!map.isEmpty()) {
-			addJsonPropertySource(environment, new JsonPropertySource(propertyValue, flatten(map)));
+			addJsonPropertySource(environment, new JsonPropertySource(propertyValue, flatten(map)));/* 添加到jvm参数和操作系统变量前面 */
 		}
 	}
 
@@ -150,7 +150,7 @@ public class SpringApplicationJsonEnvironmentPostProcessor implements Environmen
 		MutablePropertySources sources = environment.getPropertySources();
 		String name = findPropertySource(sources);
 		if (sources.contains(name)) {
-			sources.addBefore(name, source);
+			sources.addBefore(name, source); /* 添加到jvm参数和操作系统变量前面 */
 		}
 		else {
 			sources.addFirst(source);
@@ -211,7 +211,7 @@ public class SpringApplicationJsonEnvironmentPostProcessor implements Environmen
 		}
 
 		static JsonPropertyValue get(PropertySource<?> propertySource) {
-			for (String candidate : CANDIDATES) {
+			for (String candidate : CANDIDATES) {/* spring.application.json */
 				Object value = propertySource.getProperty(candidate);
 				if (value instanceof String && StringUtils.hasLength((String) value)) {
 					return new JsonPropertyValue(propertySource, candidate, (String) value);

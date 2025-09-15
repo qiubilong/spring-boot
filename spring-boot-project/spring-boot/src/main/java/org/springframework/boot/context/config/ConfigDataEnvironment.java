@@ -121,7 +121,7 @@ class ConfigDataEnvironment {
 
 	private final ConfigDataLoaders loaders;
 
-	private final ConfigDataEnvironmentContributors contributors;
+	private final ConfigDataEnvironmentContributors contributors; /* 配置贡献者 集合 */
 
 	/**
 	 * Create a new {@link ConfigDataEnvironment} instance.
@@ -145,12 +145,12 @@ class ConfigDataEnvironment {
 				.orElse(ConfigDataNotFoundAction.FAIL);
 		this.bootstrapContext = bootstrapContext;
 		this.environment = environment;
-		this.resolvers = createConfigDataLocationResolvers(logFactory, bootstrapContext, binder, resourceLoader);/* NacosConfigDataLoader、StandardConfigDataLocationResolver -->application.properties解析器*/
+		this.resolvers = createConfigDataLocationResolvers(logFactory, bootstrapContext, binder, resourceLoader);/* NacosConfigDataLocationResolver、StandardConfigDataLocationResolver -->application.properties解析器*/
 		this.additionalProfiles = additionalProfiles;
 		this.environmentUpdateListener = (environmentUpdateListener != null) ? environmentUpdateListener
 				: ConfigDataEnvironmentUpdateListener.NONE;
 		this.loaders = new ConfigDataLoaders(logFactory, bootstrapContext, resourceLoader.getClassLoader());
-		this.contributors = createContributors(binder);/* ## 配置文件搜索路径 - 默认 先file:./;   optional:file:./config/;   optional:file:./config/xxx/ ;   后optional:classpath:/;   optional:classpath:/config/ */
+		this.contributors = createContributors(binder);/* ## 初始配置贡献者 - 配置文件搜索路径 - 默认 先file:./;   optional:file:./config/;   optional:file:./config/xxx/ ;   后optional:classpath:/;   optional:classpath:/config/ */
 	}
 
 	protected ConfigDataLocationResolvers createConfigDataLocationResolvers(DeferredLogFactory logFactory,
@@ -172,7 +172,7 @@ class ConfigDataEnvironment {
 						propertySource.getName()));
 				contributors.add(ConfigDataEnvironmentContributor.ofExisting(propertySource));
 			}
-		}   /* ## 配置文件搜索路径 --spring.config.import、spring.config.location */
+		}   /* ## 配置文件搜索路径 --spring.config.import、spring.config.location */   /* 这里一般是 DEFAULT_SEARCH_LOCATIONS */
 		contributors.addAll(getInitialImportContributors(binder));/* 上面为空，默认 先optional:file:./;optional:file:./config/;optional:file:./config/， 再optional:classpath:/;optional:classpath:/config/ */
 		if (defaultPropertySource != null) {
 			this.logger.trace("Creating wrapped config data contributor for default property source");
@@ -189,7 +189,7 @@ class ConfigDataEnvironment {
 	ConfigDataEnvironmentContributors getContributors() {
 		return this.contributors;
 	}
-
+    /* 初始配置贡献者 ，这里一般是 DEFAULT_SEARCH_LOCATIONS */
 	private List<ConfigDataEnvironmentContributor> getInitialImportContributors(Binder binder) {/* 导入nacos配置 spring.config.import=optional:nacos:${spring.application.name}.yaml */
 		List<ConfigDataEnvironmentContributor> initialContributors = new ArrayList<>();//spring.config.import=https://example.com/config/server.properties
 		addInitialImportContributors(initialContributors, bindLocations(binder, IMPORT_PROPERTY, EMPTY_LOCATIONS)); //spring.config.import=configserver:http://config-server.example.com
@@ -206,7 +206,7 @@ class ConfigDataEnvironment {
 
 	private void addInitialImportContributors(List<ConfigDataEnvironmentContributor> initialContributors,
 			ConfigDataLocation[] locations) {
-		for (int i = locations.length - 1; i >= 0; i--) {/* DEFAULT_SEARCH_LOCATIONS反转 -- file配置再前，classpath配置在后 */
+		for (int i = locations.length - 1; i >= 0; i--) {/* DEFAULT_SEARCH_LOCATIONS 反转 -- file配置再前，classpath配置在后 */
 			initialContributors.add(createInitialImportContributor(locations[i]));
 		}
 	}
@@ -224,20 +224,20 @@ class ConfigDataEnvironment {
 		ConfigDataImporter importer = new ConfigDataImporter(this.logFactory, this.notFoundAction, this.resolvers,
 				this.loaders);
 		registerBootstrapBinder(this.contributors, null, DENY_INACTIVE_BINDING);
-		ConfigDataEnvironmentContributors contributors = processInitial(this.contributors, importer); /* 1、## 加载程序员配置 本地文件application.properties等 */
+		ConfigDataEnvironmentContributors contributors = processInitial(this.contributors, importer); /* 1、## 加载初始配置贡献者  程序员配置 本地文件application.properties等 */
 		ConfigDataActivationContext activationContext = createActivationContext(
 				contributors.getBinder(null, BinderOption.FAIL_ON_BIND_TO_INACTIVE_SOURCE));
-		contributors = processWithoutProfiles(contributors, importer, activationContext); /* 2、## 加载application.properties包含文件 - spring.config.import --> nacos配置 */
-		activationContext = withProfiles(contributors, activationContext);
-		contributors = processWithProfiles(contributors, importer, activationContext);    /* 3、## 加载激活环境文件 */
-		applyToEnvironment(contributors, activationContext, importer.getLoadedLocations(),/* 4、## 添加配置源到 Environment && 设置激活环境 activeProfiles */
+		contributors = processWithoutProfiles(contributors, importer, activationContext); /* 2、## 加载application.properties包含文件 - spring.config.import */
+		activationContext = withProfiles(contributors, activationContext); /*  environment中读取 spring.profiles.active */
+		contributors = processWithProfiles(contributors, importer, activationContext);    /* 3、## 加载激活环境 配置文件 & nacos配置 */
+		applyToEnvironment(contributors, activationContext, importer.getLoadedLocations(),/* 4、## 追加 配置源到 Environment && 设置激活环境 activeProfiles */
 				importer.getOptionalLocations());
 	}
 
 	private ConfigDataEnvironmentContributors processInitial(ConfigDataEnvironmentContributors contributors,
 			ConfigDataImporter importer) {
 		this.logger.trace("Processing initial config data environment contributors without activation context");
-		contributors = contributors.withProcessedImports(importer, null);/* ## 加载程序员配置文件application.properties等 */
+		contributors = contributors.withProcessedImports(importer, null);/* ## 加载初始配置贡献者 程序员 配置文件application.properties等 */
 		registerBootstrapBinder(contributors, null, DENY_INACTIVE_BINDING);
 		return contributors;
 	}
@@ -272,7 +272,7 @@ class ConfigDataEnvironment {
 		try {
 			Set<String> additionalProfiles = new LinkedHashSet<>(this.additionalProfiles);
 			additionalProfiles.addAll(getIncludedProfiles(contributors, activationContext));
-			Profiles profiles = new Profiles(this.environment, binder, additionalProfiles);
+			Profiles profiles = new Profiles(this.environment, binder, additionalProfiles); /*  environment中读取 spring.profiles.active */
 			return activationContext.withProfiles(profiles);
 		}
 		catch (BindException ex) {
@@ -338,7 +338,7 @@ class ConfigDataEnvironment {
 	private void applyContributor(ConfigDataEnvironmentContributors contributors,
 			ConfigDataActivationContext activationContext, MutablePropertySources propertySources) {
 		this.logger.trace("Applying config data environment contributions");
-		for (ConfigDataEnvironmentContributor contributor : contributors) {
+		for (ConfigDataEnvironmentContributor contributor : contributors) { /* 遍历时  环境激活后的配置贡献者 优先级高 */
 			PropertySource<?> propertySource = contributor.getPropertySource();
 			if (contributor.getKind() == ConfigDataEnvironmentContributor.Kind.BOUND_IMPORT && propertySource != null) {
 				if (!contributor.isActive(activationContext)) {
@@ -348,7 +348,7 @@ class ConfigDataEnvironment {
 				else {
 					this.logger
 							.trace(LogMessage.format("Adding imported property source '%s'", propertySource.getName()));
-					propertySources.addLast(propertySource);/* 添加配置文件源到Environment */
+					propertySources.addLast(propertySource);/* 添加配置文件源到Environment  */
 					this.environmentUpdateListener.onPropertySourceAdded(propertySource, contributor.getLocation(),
 							contributor.getResource());
 				}

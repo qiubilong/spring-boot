@@ -53,7 +53,7 @@ public interface SpringApplicationRunListener {
 	 * @param environment the environment
 	 */
 	default void environmentPrepared(ConfigurableBootstrapContext bootstrapContext,
-			ConfigurableEnvironment environment) {
+			ConfigurableEnvironment environment) { /* enviroment对象已经创建好了 */
 	}
 
 	/**

@@ -103,7 +103,7 @@ class ConfigDataLocationResolvers {
 			return Collections.emptyList();
 		}
 		for (ConfigDataLocationResolver<?> resolver : getResolvers()) {
-			if (resolver.isResolvable(context, location)) {
+			if (resolver.isResolvable(context, location)) {//可解析
 				return resolve(resolver, context, location, profiles);/* ## 解析配置文件路径 nacos or 本地*/
 			}
 		}
@@ -112,12 +112,12 @@ class ConfigDataLocationResolvers {
 
 	private List<ConfigDataResolutionResult> resolve(ConfigDataLocationResolver<?> resolver,
 			ConfigDataLocationResolverContext context, ConfigDataLocation location, Profiles profiles) {
-		List<ConfigDataResolutionResult> resolved = resolve(location, false, () -> resolver.resolve(context, location));
+		List<ConfigDataResolutionResult> resolved = resolve(location, false, () -> resolver.resolve(context, location)); /* 加载通用配置文件 - StandardConfigDataLocationResolver */
 		if (profiles == null) {
 			return resolved;
 		}
 		List<ConfigDataResolutionResult> profileSpecific = resolve(location, true,
-				() -> resolver.resolveProfileSpecific(context, location, profiles));//nacos解析 - NacosConfigDataLocationResolver
+				() -> resolver.resolveProfileSpecific(context, location, profiles));/* spring.active.profile激活后，加载配置 ------  nacos解析 - NacosConfigDataLocationResolver */
 		return merge(resolved, profileSpecific);
 	}
 

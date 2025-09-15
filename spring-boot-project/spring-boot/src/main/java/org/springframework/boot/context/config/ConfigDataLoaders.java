@@ -104,7 +104,7 @@ class ConfigDataLoaders {
 	<R extends ConfigDataResource> ConfigData load(ConfigDataLoaderContext context, R resource) throws IOException {
 		ConfigDataLoader<R> loader = getLoader(context, resource);/* 寻找匹配的配置加载器 */
 		this.logger.trace(LogMessage.of(() -> "Loading " + resource + " using loader " + loader.getClass().getName()));
-		return loader.load(context, resource);
+		return loader.load(context, resource); /* 加载  通用配置=StandardConfigDataLoader；   nacos配置=NacosConfigDataLoader */
 	}
 
 	@SuppressWarnings("unchecked")

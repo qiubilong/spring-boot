@@ -337,7 +337,7 @@ public class SpringApplication {
 	private ConfigurableEnvironment prepareEnvironment(SpringApplicationRunListeners listeners,
 			DefaultBootstrapContext bootstrapContext, ApplicationArguments applicationArguments) {
 		// Create and configure the environment
-		ConfigurableEnvironment environment = getOrCreateEnvironment();/* 创建运行配置对象 -->  webType -> ApplicationServletEnvironment */
+		ConfigurableEnvironment environment = getOrCreateEnvironment();/* 创建运行环境配置对象 -->  webType -> ApplicationServletEnvironment */
 		configureEnvironment(environment, applicationArguments.getSourceArgs());
 		ConfigurationPropertySources.attach(environment);
 		listeners.environmentPrepared(bootstrapContext, environment);/* 事件 --> EnvironmentPostProcessorApplicationListener -->加载 nacos or 本地 配置文件application.properties等 */
@@ -410,9 +410,9 @@ public class SpringApplication {
 		}
 		context.addBeanFactoryPostProcessor(new PropertySourceOrderingBeanFactoryPostProcessor(context));
 		// Load the sources
-		Set<Object> sources = getAllSources();
+		Set<Object> sources = getAllSources(); /* primarySources */
 		Assert.notEmpty(sources, "Sources must not be empty");
-		load(context, sources.toArray(new Object[0])); /* 注入配置类BeanDefinition（AppMain.class） */
+		load(context, sources.toArray(new Object[0])); /* 注入配置类 BeanDefinition（AppMain.class） */
 		listeners.contextLoaded(context);
 	}
 
@@ -420,14 +420,14 @@ public class SpringApplication {
 		if (this.registerShutdownHook) {
 			shutdownHook.registerApplicationContext(context); /* 注册spring关闭钩子 */
 		}
-		refresh(context);
+		refresh(context); /* 运行 context */
 	}
 
 	private void configureHeadlessProperty() {
 		System.setProperty(SYSTEM_PROPERTY_JAVA_AWT_HEADLESS,
 				System.getProperty(SYSTEM_PROPERTY_JAVA_AWT_HEADLESS, Boolean.toString(this.headless)));
 	}
-
+    //创建SpringApplication 运行事件 监听器 聚合器
 	private SpringApplicationRunListeners getRunListeners(String[] args) {
 		Class<?>[] types = new Class<?>[] { SpringApplication.class, String[].class };
 		return new SpringApplicationRunListeners(logger,
@@ -442,8 +442,8 @@ public class SpringApplication {
 	private <T> Collection<T> getSpringFactoriesInstances(Class<T> type, Class<?>[] parameterTypes, Object... args) {
 		ClassLoader classLoader = getClassLoader();
 		// Use names and ensure unique to protect against duplicates
-		Set<String> names = new LinkedHashSet<>(SpringFactoriesLoader.loadFactoryNames(type, classLoader));
-		List<T> instances = createSpringFactoriesInstances(type, parameterTypes, classLoader, args, names);
+		Set<String> names = new LinkedHashSet<>(SpringFactoriesLoader.loadFactoryNames(type, classLoader)); /* 找到META-INF/spring.factories定义拓展类 */
+		List<T> instances = createSpringFactoriesInstances(type, parameterTypes, classLoader, args, names); /* 实例化拓展类 */
 		AnnotationAwareOrderComparator.sort(instances);
 		return instances;
 	}
@@ -457,7 +457,7 @@ public class SpringApplication {
 				Class<?> instanceClass = ClassUtils.forName(name, classLoader);
 				Assert.isAssignable(type, instanceClass);
 				Constructor<?> constructor = instanceClass.getDeclaredConstructor(parameterTypes);
-				T instance = (T) BeanUtils.instantiateClass(constructor, args);
+				T instance = (T) BeanUtils.instantiateClass(constructor, args);/* 实例化拓展类 */
 				instances.add(instance);
 			}
 			catch (Throwable ex) {
@@ -687,7 +687,7 @@ public class SpringApplication {
 		if (this.environment != null) {
 			loader.setEnvironment(this.environment);
 		}
-		loader.load();
+		loader.load();/* 注入配置类 BeanDefinition（AppMain.class） */
 	}
 
 	/**

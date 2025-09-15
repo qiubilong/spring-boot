@@ -49,7 +49,7 @@ public interface EnvironmentPostProcessorsFactory {
 	 */
 	static EnvironmentPostProcessorsFactory fromSpringFactories(ClassLoader classLoader) {
 		return new ReflectionEnvironmentPostProcessorsFactory(classLoader,
-				SpringFactoriesLoader.loadFactoryNames(EnvironmentPostProcessor.class, classLoader));
+				SpringFactoriesLoader.loadFactoryNames(EnvironmentPostProcessor.class, classLoader)); /* 加载所有的Environment处理器 */
 	}
 
 	/**
