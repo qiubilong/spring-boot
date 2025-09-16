@@ -69,7 +69,7 @@ import org.springframework.util.StringUtils;
  * @author Madhura Bhave
  * @since 1.3.0
  * @see EnableAutoConfiguration
- */
+ */	/* 加载spring.factories自动配置类 - AopAutoConfiguration/TransactionAutoConfiguration/DispatcherServletAutoConfiguration/WebMvcAutoConfiguration */
 public class AutoConfigurationImportSelector implements DeferredImportSelector, BeanClassLoaderAware,
 		ResourceLoaderAware, BeanFactoryAware, EnvironmentAware, Ordered {
 
@@ -118,9 +118,9 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector, 
 	protected AutoConfigurationEntry getAutoConfigurationEntry(AnnotationMetadata annotationMetadata) {
 		if (!isEnabled(annotationMetadata)) {
 			return EMPTY_ENTRY;
-		}
+		}/* 加载spring.factories自动配置类 - AopAutoConfiguration/TransactionAutoConfiguration/DispatcherServletAutoConfiguration/WebMvcAutoConfiguration */
 		AnnotationAttributes attributes = getAttributes(annotationMetadata);
-		List<String> configurations = getCandidateConfigurations(annotationMetadata, attributes); /* 加载META-INF/spring.factories自动配置 */
+		List<String> configurations = getCandidateConfigurations(annotationMetadata, attributes); /* ## 加载META-INF/spring.factories自动配置 */
 		configurations = removeDuplicates(configurations);
 		Set<String> exclusions = getExclusions(annotationMetadata, attributes);
 		checkExcludedClasses(configurations, exclusions);
@@ -173,7 +173,7 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector, 
 	 * @param attributes the {@link #getAttributes(AnnotationMetadata) annotation
 	 * attributes}
 	 * @return a list of candidate configurations
-	 */
+	 */ /* 加载spring.factories自动配置类 - AopAutoConfiguration/TransactionAutoConfiguration/DispatcherServletAutoConfiguration/WebMvcAutoConfiguration */
 	protected List<String> getCandidateConfigurations(AnnotationMetadata metadata, AnnotationAttributes attributes) {
 		List<String> configurations = SpringFactoriesLoader.loadFactoryNames(getSpringFactoriesLoaderFactoryClass(),/*  EnableAutoConfiguration.class */
 				getBeanClassLoader());
@@ -424,7 +424,7 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector, 
 			this.resourceLoader = resourceLoader;
 		}
 
-		@Override
+		@Override /* 先 process() */
 		public void process(AnnotationMetadata annotationMetadata, DeferredImportSelector deferredImportSelector) {
 			Assert.state(deferredImportSelector instanceof AutoConfigurationImportSelector,
 					() -> String.format("Only %s implementations are supported, got %s",
@@ -438,7 +438,7 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector, 
 			}
 		}
 
-		@Override
+		@Override /* 接着 selectImports() */
 		public Iterable<Entry> selectImports() {
 			if (this.autoConfigurationEntries.isEmpty()) {
 				return Collections.emptyList();

@@ -40,7 +40,7 @@ public abstract class SpringBootCondition implements Condition {
 
 	private final Log logger = LogFactory.getLog(getClass());
 
-	@Override
+	@Override /* ConditionEvaluator.matches(this.context, metadata) 调用*/
 	public final boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
 		String classOrMethodName = getClassOrMethodName(metadata);
 		try {

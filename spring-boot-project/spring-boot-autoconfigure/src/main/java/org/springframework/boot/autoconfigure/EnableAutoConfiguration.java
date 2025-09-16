@@ -80,9 +80,9 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
 @Documented
 @Inherited
 @AutoConfigurationPackage /* 注入扫描路径Bean */
-@Import(AutoConfigurationImportSelector.class)
+@Import(AutoConfigurationImportSelector.class) /*  加载spring.factories自动配置类 */
 public @interface EnableAutoConfiguration {
-
+	/* 加载spring.factories自动配置类 - AopAutoConfiguration/TransactionAutoConfiguration/DispatcherServletAutoConfiguration/WebMvcAutoConfiguration */
 	/**
 	 * Environment property that can be used to override when auto-configuration is
 	 * enabled.
