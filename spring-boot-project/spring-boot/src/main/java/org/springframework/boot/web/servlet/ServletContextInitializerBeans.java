@@ -103,11 +103,11 @@ public class ServletContextInitializerBeans extends AbstractCollection<ServletCo
 
 	private void addServletContextInitializerBean(String beanName, ServletContextInitializer initializer,
 			ListableBeanFactory beanFactory) {
-		if (initializer instanceof ServletRegistrationBean) {
+		if (initializer instanceof ServletRegistrationBean) {      /* DispatcherServlet注册Bean */
 			Servlet source = ((ServletRegistrationBean<?>) initializer).getServlet();
 			addServletContextInitializerBean(Servlet.class, beanName, initializer, beanFactory, source);
 		}
-		else if (initializer instanceof FilterRegistrationBean) {
+		else if (initializer instanceof FilterRegistrationBean) { /* Filter注册Bean */
 			Filter source = ((FilterRegistrationBean<?>) initializer).getFilter();
 			addServletContextInitializerBean(Filter.class, beanName, initializer, beanFactory, source);
 		}
@@ -288,7 +288,7 @@ public class ServletContextInitializerBeans extends AbstractCollection<ServletCo
 	 * {@link RegistrationBeanAdapter} for {@link Filter} beans.
 	 */
 	private static class FilterRegistrationBeanAdapter implements RegistrationBeanAdapter<Filter> {
-
+         /* Filter对象 包装成 RegistrationBean （ServletContextInitializer） */
 		@Override
 		public RegistrationBean createRegistrationBean(String name, Filter source, int totalNumberOfSourceBeans) {
 			FilterRegistrationBean<Filter> bean = new FilterRegistrationBean<>(source);

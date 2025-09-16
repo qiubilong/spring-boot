@@ -78,20 +78,20 @@ public class EventPublishingRunListener implements SpringApplicationRunListener,
 		this.initialMulticaster
 				.multicastEvent(new ApplicationStartingEvent(bootstrapContext, this.application, this.args));
 	}
-    /* enviroment对象已经创建好了 */
+    /* enviroment对象 已经创建好了 */
 	@Override
 	public void environmentPrepared(ConfigurableBootstrapContext bootstrapContext,
 			ConfigurableEnvironment environment) {
 		this.initialMulticaster.multicastEvent(
 				new ApplicationEnvironmentPreparedEvent(bootstrapContext, this.application, this.args, environment)); /* EnvironmentPostProcessorApplicationListener - 加载 nacos、本地文件配置 */
 	}
-
+	/* ApplicationContext对象 已经创建好了 */
 	@Override
 	public void contextPrepared(ConfigurableApplicationContext context) {
 		this.initialMulticaster
 				.multicastEvent(new ApplicationContextInitializedEvent(this.application, this.args, context));
 	}
-
+	/* ApplicationContext对象 已经配置好了 */
 	@Override
 	public void contextLoaded(ConfigurableApplicationContext context) {
 		for (ApplicationListener<?> listener : this.application.getListeners()) {

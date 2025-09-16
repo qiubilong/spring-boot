@@ -53,7 +53,7 @@ import org.springframework.data.repository.Repository;
 @Documented
 @Inherited
 @SpringBootConfiguration  /* @Component */
-@EnableAutoConfiguration  /* ImportSelect 自动配置类 */
+@EnableAutoConfiguration  /* @Import 自动配置类 */
 @ComponentScan(excludeFilters = { @Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class), /* 扫描注册Bean */
 		@Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) })//排除EnableAutoConfiguration
 public @interface SpringBootApplication {

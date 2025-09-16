@@ -520,7 +520,7 @@ public class SpringApplication {
 				sources.replace(name, composite);
 			}
 			else {
-				sources.addFirst(new SimpleCommandLinePropertySource(args));/* 命令行配置 --server.port=8083 */
+				sources.addFirst(new SimpleCommandLinePropertySource(args));/* 命令行配置 --server.port=8083 --优先级最高 */
 			}
 		}
 	}

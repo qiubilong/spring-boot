@@ -73,11 +73,11 @@ class SpringApplicationRunListeners {//apringboot运行事件聚合器
 	void contextLoaded(ConfigurableApplicationContext context) {
 		doWithListeners("spring.boot.application.context-loaded", (listener) -> listener.contextLoaded(context));
 	}
-
+	/* ApplicationContext 对象 启动完毕 */
 	void started(ConfigurableApplicationContext context, Duration timeTaken) {
 		doWithListeners("spring.boot.application.started", (listener) -> listener.started(context, timeTaken));
 	}
-
+	/* SringBoot 对象 启动完毕 */
 	void ready(ConfigurableApplicationContext context, Duration timeTaken) {
 		doWithListeners("spring.boot.application.ready", (listener) -> listener.ready(context, timeTaken));
 	}

@@ -223,16 +223,16 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 	 * @return the self initializer
 	 * @see #prepareWebApplicationContext(ServletContext)
 	 */
-	private org.springframework.boot.web.servlet.ServletContextInitializer getSelfInitializer() { /* 构建一个ServletContextInitializer --> 执行当前对象 selfInitialize() */
-		return this::selfInitialize;
+	private org.springframework.boot.web.servlet.ServletContextInitializer getSelfInitializer() { /* 构建一个匿名内部类ServletContextInitializer */
+		return this::selfInitialize; /* tomcat启动回调 onStartup(ServletContext servletContext) */
 	}
 
 	private void selfInitialize(ServletContext servletContext) throws ServletException {
-		prepareWebApplicationContext(servletContext);
+		prepareWebApplicationContext(servletContext);//注册applicationContext到servletContext
 		registerApplicationScope(servletContext);
 		WebApplicationContextUtils.registerEnvironmentBeans(getBeanFactory(), servletContext);
 		for (ServletContextInitializer beans : getServletContextInitializerBeans()) {
-			beans.onStartup(servletContext); /* 1、注册 DispatcherServlet; 2、注册 CharacterEncodingFilter   */
+			beans.onStartup(servletContext); /* 1、注册 DispatcherServlet; 2、注册 Filter ( 自定义、 CharacterEncodingFilter )   */
 		}
 	}
 
