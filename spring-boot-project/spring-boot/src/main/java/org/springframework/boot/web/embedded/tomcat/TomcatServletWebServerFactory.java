@@ -191,7 +191,7 @@ public class TomcatServletWebServerFactory extends AbstractServletWebServerFacto
 		if (this.disableMBeanRegistry) {
 			Registry.disableRegistry();
 		}
-		Tomcat tomcat = new Tomcat();
+		Tomcat tomcat = new Tomcat(); /* 实例化Tomcat */
 		File baseDir = (this.baseDirectory != null) ? this.baseDirectory : createTempDir("tomcat");
 		tomcat.setBaseDir(baseDir.getAbsolutePath());
 		for (LifecycleListener listener : this.serverLifecycleListeners) {
@@ -206,9 +206,9 @@ public class TomcatServletWebServerFactory extends AbstractServletWebServerFacto
 		configureEngine(tomcat.getEngine());
 		for (Connector additionalConnector : this.additionalTomcatConnectors) {
 			tomcat.getService().addConnector(additionalConnector);
-		}
+		} /* 聚合 Servlet上下文初始化器列表 */
 		prepareContext(tomcat.getHost(), initializers); /* 注册ServletContextInitializer列表 --> 注入DispatcherServlet、Filter */
-		return getTomcatWebServer(tomcat); /* 创建Tomcat */
+		return getTomcatWebServer(tomcat); /* 启动Tomcat */
 	}
 
 	private void configureEngine(Engine engine) {
@@ -255,7 +255,7 @@ public class TomcatServletWebServerFactory extends AbstractServletWebServerFacto
 		context.addLifecycleListener(new StaticResourceConfigurer(context));
 		ServletContextInitializer[] initializersToUse = mergeInitializers(initializers);
 		host.addChild(context);
-		configureContext(context, initializersToUse);
+		configureContext(context, initializersToUse);/* 聚合 Servlet上下文初始化器列表 */
 		postProcessContext(context);
 	}
 
@@ -370,7 +370,7 @@ public class TomcatServletWebServerFactory extends AbstractServletWebServerFacto
 	 * @param initializers initializers to apply
 	 */
 	protected void configureContext(Context context, ServletContextInitializer[] initializers) {
-		TomcatStarter starter = new TomcatStarter(initializers);
+		TomcatStarter starter = new TomcatStarter(initializers);/* 聚合 Servlet上下文初始化器列表 */
 		if (context instanceof TomcatEmbeddedContext) {
 			TomcatEmbeddedContext embeddedContext = (TomcatEmbeddedContext) context;
 			embeddedContext.setStarter(starter);
@@ -476,7 +476,7 @@ public class TomcatServletWebServerFactory extends AbstractServletWebServerFacto
 	 * @return a new {@link TomcatWebServer} instance
 	 */
 	protected TomcatWebServer getTomcatWebServer(Tomcat tomcat) {
-		return new TomcatWebServer(tomcat, getPort() >= 0, getShutdown());
+		return new TomcatWebServer(tomcat, getPort() >= 0, getShutdown());/* 启动Tomcat */
 	}
 
 	@Override

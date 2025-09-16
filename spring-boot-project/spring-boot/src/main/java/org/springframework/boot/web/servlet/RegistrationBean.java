@@ -34,7 +34,7 @@ import org.springframework.util.StringUtils;
  * @see FilterRegistrationBean
  * @see DelegatingFilterProxyRegistrationBean
  * @see ServletListenerRegistrationBean
- */
+ */ /* Servlet 上下文 -  注册bean */
 public abstract class RegistrationBean implements ServletContextInitializer, Ordered {
 
 	private static final Log logger = LogFactory.getLog(RegistrationBean.class);
@@ -43,14 +43,14 @@ public abstract class RegistrationBean implements ServletContextInitializer, Ord
 
 	private boolean enabled = true;
 
-	@Override
+	@Override  /* tomcat 启动回调*/
 	public final void onStartup(ServletContext servletContext) throws ServletException {
 		String description = getDescription();
 		if (!isEnabled()) {
 			logger.info(StringUtils.capitalize(description) + " was not registered (disabled)");
 			return;
 		}
-		register(description, servletContext);
+		register(description, servletContext); /* 注册 servlet or filter */
 	}
 
 	/**

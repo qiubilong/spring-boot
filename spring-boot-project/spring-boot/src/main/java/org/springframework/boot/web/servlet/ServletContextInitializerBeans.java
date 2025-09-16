@@ -83,7 +83,7 @@ public class ServletContextInitializerBeans extends AbstractCollection<ServletCo
 		this.initializers = new LinkedMultiValueMap<>();
 		this.initializerTypes = (initializerTypes.length != 0) ? Arrays.asList(initializerTypes)
 				: Collections.singletonList(ServletContextInitializer.class);
-		addServletContextInitializerBeans(beanFactory); /* 寻找 ServletContextInitializer  */
+		addServletContextInitializerBeans(beanFactory); /* 寻找 RegistrationBean(ServletContextInitializer)  */
 		addAdaptableBeans(beanFactory);  /* 包装 Filter --> ServletContextInitializer */
 		List<ServletContextInitializer> sortedInitializers = this.initializers.values().stream()
 				.flatMap((value) -> value.stream().sorted(AnnotationAwareOrderComparator.INSTANCE))
@@ -103,11 +103,11 @@ public class ServletContextInitializerBeans extends AbstractCollection<ServletCo
 
 	private void addServletContextInitializerBean(String beanName, ServletContextInitializer initializer,
 			ListableBeanFactory beanFactory) {
-		if (initializer instanceof ServletRegistrationBean) {      /* DispatcherServlet注册Bean */
+		if (initializer instanceof ServletRegistrationBean) { /* dispatcherServlet 注入 DispatcherServletRegistrationBean  */
 			Servlet source = ((ServletRegistrationBean<?>) initializer).getServlet();
 			addServletContextInitializerBean(Servlet.class, beanName, initializer, beanFactory, source);
 		}
-		else if (initializer instanceof FilterRegistrationBean) { /* Filter注册Bean */
+		else if (initializer instanceof FilterRegistrationBean) { /* 自定义Filter注册Bean */
 			Filter source = ((FilterRegistrationBean<?>) initializer).getFilter();
 			addServletContextInitializerBean(Filter.class, beanName, initializer, beanFactory, source);
 		}
@@ -152,7 +152,7 @@ public class ServletContextInitializerBeans extends AbstractCollection<ServletCo
 	protected void addAdaptableBeans(ListableBeanFactory beanFactory) {
 		MultipartConfigElement multipartConfig = getMultipartConfig(beanFactory);
 		addAsRegistrationBean(beanFactory, Servlet.class, new ServletRegistrationBeanAdapter(multipartConfig));
-		addAsRegistrationBean(beanFactory, Filter.class, new FilterRegistrationBeanAdapter()); /* 包装 Filter */
+		addAsRegistrationBean(beanFactory, Filter.class, new FilterRegistrationBeanAdapter()); /* 包装 Filter  --> RegistrationBean(ServletContextInitializer) */
 		for (Class<?> listenerType : ServletListenerRegistrationBean.getSupportedTypes()) {
 			addAsRegistrationBean(beanFactory, EventListener.class, (Class<EventListener>) listenerType,
 					new ServletListenerRegistrationBeanAdapter());
@@ -288,7 +288,7 @@ public class ServletContextInitializerBeans extends AbstractCollection<ServletCo
 	 * {@link RegistrationBeanAdapter} for {@link Filter} beans.
 	 */
 	private static class FilterRegistrationBeanAdapter implements RegistrationBeanAdapter<Filter> {
-         /* Filter对象 包装成 RegistrationBean （ServletContextInitializer） */
+		/* 将Filter对象封装为 Servlet上下文初始化器 ServletContextInitializer  */
 		@Override
 		public RegistrationBean createRegistrationBean(String name, Filter source, int totalNumberOfSourceBeans) {
 			FilterRegistrationBean<Filter> bean = new FilterRegistrationBean<>(source);

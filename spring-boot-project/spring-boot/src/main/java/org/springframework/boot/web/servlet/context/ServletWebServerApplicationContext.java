@@ -179,7 +179,7 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 			StartupStep createWebServer = this.getApplicationStartup().start("spring.boot.webserver.create");
 			ServletWebServerFactory factory = getWebServerFactory(); /* Tomcat Web工厂 */
 			createWebServer.tag("factory", factory.getClass().toString());
-			this.webServer = factory.getWebServer(getSelfInitializer());/* 创建Tomcat --> Spring容器中获取 ServletContextInitializer对象列表 --> 注入DispatcherServlet,Filter等   */
+			this.webServer = factory.getWebServer(getSelfInitializer());/* 创建Tomcat --> tomcat启动时 - Spring容器中获取 ServletContextInitializer对象列表 --> 注入DispatcherServlet,Filter等   */
 			createWebServer.end();
 			getBeanFactory().registerSingleton("webServerGracefulShutdown",
 					new WebServerGracefulShutdownLifecycle(this.webServer));
@@ -223,8 +223,8 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 	 * @return the self initializer
 	 * @see #prepareWebApplicationContext(ServletContext)
 	 */
-	private org.springframework.boot.web.servlet.ServletContextInitializer getSelfInitializer() { /* 构建一个匿名内部类ServletContextInitializer */
-		return this::selfInitialize; /* tomcat启动回调 onStartup(ServletContext servletContext) */
+	private org.springframework.boot.web.servlet.ServletContextInitializer getSelfInitializer() { /* 构建一个匿名类对象 ServletContextInitializer */
+		return this::selfInitialize;/* onStartup(ServletContext servletContext)时调用 */
 	}
 
 	private void selfInitialize(ServletContext servletContext) throws ServletException {
@@ -232,7 +232,7 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 		registerApplicationScope(servletContext);
 		WebApplicationContextUtils.registerEnvironmentBeans(getBeanFactory(), servletContext);
 		for (ServletContextInitializer beans : getServletContextInitializerBeans()) {
-			beans.onStartup(servletContext); /* 1、注册 DispatcherServlet; 2、注册 Filter ( 自定义、 CharacterEncodingFilter )   */
+			beans.onStartup(servletContext); /* 1、注册 DispatcherServlet; 2、注册Filter（自定义、 CharacterEncodingFilter）   */
 		}
 	}
 

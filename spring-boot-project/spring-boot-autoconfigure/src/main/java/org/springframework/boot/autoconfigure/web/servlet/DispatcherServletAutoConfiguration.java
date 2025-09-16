@@ -67,8 +67,8 @@ import org.springframework.web.servlet.DispatcherServlet;
 @ConditionalOnWebApplication(type = Type.SERVLET)
 @ConditionalOnClass(DispatcherServlet.class)
 @AutoConfigureAfter(ServletWebServerFactoryAutoConfiguration.class)
-public class DispatcherServletAutoConfiguration {
-
+public class DispatcherServletAutoConfiguration {   /*  1、创建 DispatcherServlet &    */
+                                                    /*  2、利用 DispatcherServletRegistrationBean（ServletContextInitializer） 注入Tomcat */
 	/**
 	 * The bean name for a DispatcherServlet that will be mapped to the root URL "/".
 	 */

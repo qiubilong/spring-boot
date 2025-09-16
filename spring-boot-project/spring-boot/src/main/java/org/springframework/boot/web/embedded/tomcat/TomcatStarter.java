@@ -33,7 +33,7 @@ import org.springframework.boot.web.servlet.ServletContextInitializer;
  *
  * @author Phillip Webb
  * @author Andy Wilkinson
- */
+ */   /* 聚合 Servlet上下文初始化器列表 */
 class TomcatStarter implements ServletContainerInitializer {
 
 	private static final Log logger = LogFactory.getLog(TomcatStarter.class);
