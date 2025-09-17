@@ -102,13 +102,13 @@ public class EventPublishingRunListener implements SpringApplicationRunListener,
 		}
 		this.initialMulticaster.multicastEvent(new ApplicationPreparedEvent(this.application, this.args, context));
 	}
-
+	/* ApplicationContext 对象 启动完毕 */
 	@Override
 	public void started(ConfigurableApplicationContext context, Duration timeTaken) {
 		context.publishEvent(new ApplicationStartedEvent(this.application, this.args, context, timeTaken));
 		AvailabilityChangeEvent.publish(context, LivenessState.CORRECT);
 	}
-
+	/* SringBoot 对象 启动完毕 */
 	@Override
 	public void ready(ConfigurableApplicationContext context, Duration timeTaken) {
 		context.publishEvent(new ApplicationReadyEvent(this.application, this.args, context, timeTaken));

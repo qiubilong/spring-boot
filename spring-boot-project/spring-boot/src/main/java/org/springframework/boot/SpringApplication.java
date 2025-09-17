@@ -311,7 +311,7 @@ public class SpringApplication {
 				new StartupInfoLogger(this.mainApplicationClass).logStarted(getApplicationLog(), timeTakenToStartup);
 			}
 			listeners.started(context, timeTakenToStartup);
-			callRunners(context, applicationArguments);//命令参数回调
+			callRunners(context, applicationArguments);//命令参数回调  -  ApplicationRunner/ CommandLineRunner 回调
 		}
 		catch (Throwable ex) {
 			handleRunFailure(context, ex, listeners);
@@ -752,7 +752,7 @@ public class SpringApplication {
 	 */
 	protected void afterRefresh(ConfigurableApplicationContext context, ApplicationArguments args) {
 	}
-
+    /* ApplicationRunner/ CommandLineRunner 回调 */
 	private void callRunners(ApplicationContext context, ApplicationArguments args) {
 		List<Object> runners = new ArrayList<>();
 		runners.addAll(context.getBeansOfType(ApplicationRunner.class).values());
