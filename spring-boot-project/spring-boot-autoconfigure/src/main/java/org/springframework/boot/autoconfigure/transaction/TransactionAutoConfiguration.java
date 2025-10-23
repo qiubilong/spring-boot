@@ -46,7 +46,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(PlatformTransactionManager.class)
 @EnableConfigurationProperties(TransactionProperties.class)
-public class TransactionAutoConfiguration {
+public class TransactionAutoConfiguration {  /* 事务自动配置类 */
 
 	@Bean
 	@ConditionalOnMissingBean
