@@ -77,7 +77,7 @@ import org.springframework.util.StringUtils;
  * @see SpringBootTest
  * @see TestConfiguration
  */
-public class SpringBootTestContextBootstrapper extends DefaultTestContextBootstrapper {
+public class SpringBootTestContextBootstrapper extends DefaultTestContextBootstrapper {/* springboot 测试容器启动引导类 -- SpringBootContextLoader启动容器 */
 
 	private static final String[] WEB_ENVIRONMENT_CLASSES = { "javax.servlet.Servlet",
 			"org.springframework.web.context.ConfigurableWebApplicationContext" };
@@ -95,7 +95,7 @@ public class SpringBootTestContextBootstrapper extends DefaultTestContextBootstr
 	private static final Log logger = LogFactory.getLog(SpringBootTestContextBootstrapper.class);
 
 	@Override
-	public TestContext buildTestContext() {
+	public TestContext buildTestContext() { /* 解析配置 */
 		TestContext context = super.buildTestContext();
 		verifyConfiguration(context.getTestClass());
 		WebEnvironment webEnvironment = getWebEnvironment(context.getTestClass());

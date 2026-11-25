@@ -77,7 +77,7 @@ import org.springframework.web.context.WebApplicationContext;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@BootstrapWith(SpringBootTestContextBootstrapper.class)
+@BootstrapWith(SpringBootTestContextBootstrapper.class)/* springboot 测试容器启动引导类 -- SpringBootContextLoader启动容器 */
 @ExtendWith(SpringExtension.class)
 public @interface SpringBootTest {
 
@@ -122,7 +122,7 @@ public @interface SpringBootTest {
 	 * {@link WebEnvironment#MOCK}.
 	 * @return the type of web environment
 	 */
-	WebEnvironment webEnvironment() default WebEnvironment.MOCK;
+	WebEnvironment webEnvironment() default WebEnvironment.MOCK; /* Web应用 */
 
 	/**
 	 * An enumeration web environment modes.
@@ -135,7 +135,7 @@ public @interface SpringBootTest {
 		 * Spring WebFlux is on the classpath or a regular {@link ApplicationContext}
 		 * otherwise.
 		 */
-		MOCK(false),
+		MOCK(false), /* Web应用 */
 
 		/**
 		 * Creates a web application context (reactive or servlet based) and sets a
@@ -156,7 +156,7 @@ public @interface SpringBootTest {
 		 * {@link SpringApplication#setWebApplicationType(WebApplicationType)} to
 		 * {@link WebApplicationType#NONE}.
 		 */
-		NONE(false);
+		NONE(false);/* App 应用 */
 
 		private final boolean embedded;
 

@@ -85,26 +85,26 @@ public class SpringBootContextLoader extends AbstractContextLoader {
 	private static final String[] NO_ARGS = new String[0];
 
 	@Override
-	public ApplicationContext loadContext(MergedContextConfiguration config) throws Exception {
-		Class<?>[] configClasses = config.getClasses();
+	public ApplicationContext loadContext(MergedContextConfiguration config) throws Exception {/* 启动测试类 springboot容器  */
+		Class<?>[] configClasses = config.getClasses(); /* springboot启动类 */
 		String[] configLocations = config.getLocations();
 		Assert.state(!ObjectUtils.isEmpty(configClasses) || !ObjectUtils.isEmpty(configLocations),
 				() -> "No configuration classes or locations found in @SpringApplicationConfiguration. "
 						+ "For default configuration detection to work you need Spring 4.0.3 or better (found "
 						+ SpringVersion.getVersion() + ").");
-		SpringApplication application = getSpringApplication();
-		application.setMainApplicationClass(config.getTestClass());
+		SpringApplication application = getSpringApplication(); /* new SpringApplication() */
+		application.setMainApplicationClass(config.getTestClass());/* 启动测试类 */
 		application.addPrimarySources(Arrays.asList(configClasses));
 		application.getSources().addAll(Arrays.asList(configLocations));
 		ConfigurableEnvironment environment = getEnvironment();
-		if (!ObjectUtils.isEmpty(config.getActiveProfiles())) {
+		if (!ObjectUtils.isEmpty(config.getActiveProfiles())) {/* 测试类激活环境 */
 			setActiveProfiles(environment, config.getActiveProfiles());
 		}
 		ResourceLoader resourceLoader = (application.getResourceLoader() != null) ? application.getResourceLoader()
 				: new DefaultResourceLoader(getClass().getClassLoader());
 		TestPropertySourceUtils.addPropertiesFilesToEnvironment(environment, resourceLoader,
 				config.getPropertySourceLocations());
-		TestPropertySourceUtils.addInlinedPropertiesToEnvironment(environment, getInlinedProperties(config));
+		TestPropertySourceUtils.addInlinedPropertiesToEnvironment(environment, getInlinedProperties(config));/* 测试环境配置 */
 		application.setEnvironment(environment);
 		List<ApplicationContextInitializer<?>> initializers = getInitializers(config, application);
 		if (config instanceof WebMergedContextConfiguration) {
@@ -123,7 +123,7 @@ public class SpringBootContextLoader extends AbstractContextLoader {
 			application.setWebApplicationType(WebApplicationType.NONE);
 		}
 		application.setInitializers(initializers);
-		return application.run(getArgs(config));
+		return application.run(getArgs(config));/* 启动测试类 springboot容器  */
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class SpringBootContextLoader extends AbstractContextLoader {
 		disableJmx(properties);
 		properties.addAll(Arrays.asList(config.getPropertySourceProperties()));
 		if (!isEmbeddedWebEnvironment(config) && !hasCustomServerPort(properties)) {
-			properties.add("server.port=-1");
+			properties.add("server.port=-1"); /* 禁止启动内嵌 Web 服务器 */
 		}
 		return StringUtils.toStringArray(properties);
 	}
